@@ -27,3 +27,5 @@ test: bin/goss
 	@docker-compose -f tests/docker-compose.yml exec goss \
 		goss -g solr.yaml validate --max-concurrent 4 --format documentation
 	@docker-compose -f tests/docker-compose.yml down || true
+
+tests: test
