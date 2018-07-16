@@ -1,0 +1,16 @@
+version: '3'
+services:
+    solr:
+        image: bearstech/solr
+        ports:
+            - '8983:8983'
+
+    goss:
+        image: bearstech/debian:stretch
+        command: "sleep 600000000000000000000000"
+        volumes:
+            - ../bin/goss:/usr/bin/goss
+            - ../tests:/goss
+        working_dir: /goss
+        links:
+            - solr

@@ -1,0 +1,9 @@
+---
+
+http:
+    http://solr:8983/solr:
+        status: 200
+        no-follow-redirects: false
+        timeout: 1000
+        body:
+            - /.*Welcome to Solr!.*/
