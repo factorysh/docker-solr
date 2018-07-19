@@ -1,7 +1,9 @@
 
 GOSS_VERSION := 0.3.5
 
-all: solr3
+all: pull build
+
+build: solr3
 
 solr3:
 	docker build -t bearstech/solr:3 -f Dockerfile.36 .
