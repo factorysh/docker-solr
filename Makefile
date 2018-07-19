@@ -6,7 +6,7 @@ all: pull build
 build: solr3
 
 solr3:
-	docker build -t bearstech/solr:3 -f Dockerfile.36 .
+	docker build -t bearstech/solr:3 -f Dockerfile .
 	docker tag bearstech/solr:3 bearstech/solr:3.6
 	docker tag bearstech/solr:3 bearstech/solr:latest
 
