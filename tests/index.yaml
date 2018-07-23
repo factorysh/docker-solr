@@ -6,4 +6,4 @@ http:
         no-follow-redirects: false
         timeout: 1000
         body:
-            - /.*status.*OK.*status.*/
+            - /.*status.*OK.*/

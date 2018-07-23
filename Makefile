@@ -1,11 +1,28 @@
 
 GOSS_VERSION := 0.3.5
 
+SOLR_URL=http://archive.apache.org/dist/lucene/solr
+SOLR36_VERSION=3.6.2
+
 all: pull build
 
 build: solr3
 
-solr3:
+build/$(SOLR36_VERSION)/solr.tgz:
+	# fetch archive
+	mkdir -p build/$(SOLR36_VERSION)
+	curl $(SOLR_URL)/$(SOLR36_VERSION)/apache-solr-$(SOLR36_VERSION).tgz > build/$(SOLR36_VERSION)/solr.tgz
+
+build/$(SOLR36_VERSION)/solr: build/$(SOLR36_VERSION)/solr.tgz
+	mkdir -p build/$(SOLR36_VERSION)/solr
+	#only extract example (contains solr + jetty)
+	tar --strip-components=2 -C build/$(SOLR36_VERSION)/solr \
+	   	-xzf build/$(SOLR36_VERSION)/solr.tgz apache-solr-$(SOLR36_VERSION)/example
+	# only extract contrib (contains additionals solr libs)
+	tar --strip-components=1 -C build/$(SOLR36_VERSION)/solr \
+		-xzf build/$(SOLR36_VERSION)/solr.tgz apache-solr-$(SOLR36_VERSION)/contrib
+
+solr3: build/$(SOLR36_VERSION)/solr
 	docker build -t bearstech/solr:3 -f Dockerfile.36 .
 	docker tag bearstech/solr:3 bearstech/solr:3.6
 	docker tag bearstech/solr:3 bearstech/solr:latest
@@ -27,7 +44,7 @@ test: bin/goss
 	@docker-compose -f tests/docker-compose.yml down || true
 	@docker-compose -f tests/docker-compose.yml up -d
 	@docker-compose -f tests/docker-compose.yml exec -T goss \
-		goss -g solr.yaml validate --max-concurrent 4 --format documentation
+		goss -g solr.yaml validate --retry-timeout 30s --sleep 1s --max-concurrent 4 --format documentation
 	@docker-compose -f tests/docker-compose.yml down || true
 
 tests: test
