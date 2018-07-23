@@ -1,7 +1,9 @@
 
 GOSS_VERSION := 0.3.5
 
-all: solr3
+all: pull build
+
+build: solr3
 
 solr3:
 	docker build -t bearstech/solr:3 -f Dockerfile.36 .
@@ -24,7 +26,7 @@ bin/goss:
 test: bin/goss
 	@docker-compose -f tests/docker-compose.yml down || true
 	@docker-compose -f tests/docker-compose.yml up -d
-	@docker-compose -f tests/docker-compose.yml exec goss \
+	@docker-compose -f tests/docker-compose.yml exec -T goss \
 		goss -g solr.yaml validate --max-concurrent 4 --format documentation
 	@docker-compose -f tests/docker-compose.yml down || true
 
