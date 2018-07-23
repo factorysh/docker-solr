@@ -13,6 +13,9 @@ tar --strip-components=2 -C /tmp/solr -xzf /tmp/$SOLR.tgz $SOLR/example
 # only extract contrib (contains additionals solr libs)
 tar --strip-components=1 -C /tmp/solr -xzf /tmp/$SOLR.tgz $SOLR/contrib
 
+# config dir
+mkdir -p /opt/solr/solr/conf
+
 # data dir
 mkdir /var/lib/solr
 
