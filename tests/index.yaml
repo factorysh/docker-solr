@@ -1,9 +1,9 @@
 ---
 
 http:
-    http://solr:8983/solr:
+    http://solr:8983/solr/admin/ping:
         status: 200
         no-follow-redirects: false
         timeout: 1000
         body:
-            - /.*Welcome to Solr!.*/
+            - /.*status.*OK.*status.*/
