@@ -1,21 +1,24 @@
-# use bearstech stretch 
+# use bearstech stretch
 FROM bearstech/debian:stretch
 
 ENV DEBIAN_FRONTEND noninteractive
 
 ENV SOLR_VERSION=3.6.2
+ENV SOLR_PORT=8983
+
 ENV BUILD_DIR=build/$SOLR_VERSION/solr
 
 # we need openjdk
-RUN apt-get update && apt-get install -y openjdk-8-jre-headless curl \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN \
-    # config dir
-    mkdir -p /opt/solr/solr/conf \
-    # data dir
-    mkdir /var/lib/solr
+RUN set -eux \
+    &&  apt-get update \
+    &&  apt-get install -y --no-install-recommends \
+                    openjdk-8-jre-headless \
+    &&  apt-get clean \
+    &&  rm -rf /var/lib/apt/lists/* \
+        # config dir
+    &&  mkdir -p /opt/solr/solr/conf \
+        # data dir
+    &&  mkdir /var/lib/solr
 
 # only take what we need from example directory
 COPY $BUILD_DIR/etc/ /opt/solr/etc/
@@ -28,7 +31,7 @@ COPY $BUILD_DIR/solr/solr.xml /opt/solr/solr/
 COPY $BUILD_DIR/solr/conf/ /opt/solr/solr/conf
 
 # Run Apache Solr
-ENV SOLR_PORT=8983
 EXPOSE $SOLR_PORT
 WORKDIR /opt/solr
+
 CMD ["/bin/bash", "-c", "java -jar start.jar","-Djetty.port=$SOLR_PORT"]
