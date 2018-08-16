@@ -35,6 +35,11 @@ push:
 	docker push bearstech/solr:3.6
 	docker push bearstech/solr:latest
 
+remove_image:
+	docker rmi bearstech/solr:3
+	docker rmi bearstech/solr:3.6
+	docker rmi bearstech/solr:latest
+
 bin/goss:
 	mkdir -p bin
 	curl -o bin/goss -L https://github.com/aelsabbahy/goss/releases/download/v${GOSS_VERSION}/goss-linux-amd64
