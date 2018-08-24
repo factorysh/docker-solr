@@ -46,10 +46,10 @@ bin/goss:
 	chmod +x bin/goss
 
 test: bin/goss
-	@docker-compose -f tests/docker-compose.yml down || true
-	@docker-compose -f tests/docker-compose.yml up -d
-	@docker-compose -f tests/docker-compose.yml exec -T goss \
+	@docker-compose -f tests_solr/docker-compose.yml down || true
+	@docker-compose -f tests_solr/docker-compose.yml up -d
+	@docker-compose -f tests_solr/docker-compose.yml exec -T goss \
 		goss -g solr.yaml validate --retry-timeout 30s --sleep 1s --max-concurrent 4 --format documentation
-	@docker-compose -f tests/docker-compose.yml down || true
+	@docker-compose -f tests_solr/docker-compose.yml down || true
 
 tests: test

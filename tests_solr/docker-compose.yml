@@ -12,7 +12,7 @@ services:
         command: "sleep 600000000000000000000000"
         volumes:
             - ../bin/goss:/usr/bin/goss
-            - ../tests:/goss
+            - ../tests_solr:/goss
         working_dir: /goss
         links:
             - solr
