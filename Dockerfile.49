@@ -16,7 +16,7 @@ RUN set -eux \
     &&  apt-get clean \
     &&  rm -rf /var/lib/apt/lists/* \
         # config dir
-    &&  mkdir -p /opt/solr/solr/conf \
+    &&  mkdir -p /opt/solr/solr/collection1/conf \
         # data dir
     &&  mkdir /var/lib/solr
 
@@ -26,6 +26,9 @@ COPY $BUILD_DIR/lib/ /opt/solr/lib/
 COPY $BUILD_DIR/webapps/ /opt/solr/webapps/
 COPY $BUILD_DIR/contrib/ /opt/solr/contrib/
 COPY $BUILD_DIR/start.jar /opt/solr/
+COPY log4j.properties.49 /opt/solr/resources/log4j.properties
+COPY $BUILD_DIR/contexts/ /opt/solr/contexts/
+
 
 COPY $BUILD_DIR/solr/solr.xml /opt/solr/solr/
 COPY $BUILD_DIR/solr/collection1/ /opt/solr/solr/collection1/
