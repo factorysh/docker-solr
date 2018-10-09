@@ -36,6 +36,5 @@ COPY $BUILD_DIR/solr/collection1/ /opt/solr/solr/collection1/
 # Run Apache Solr
 EXPOSE $SOLR_PORT
 WORKDIR /opt/solr
-ENV SOLR_TIMEZONE="Europe/Paris"
 
 CMD ["/bin/bash", "-c", "java -jar start.jar","-Djetty.port=$SOLR_PORT"]
