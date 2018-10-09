@@ -4,10 +4,31 @@ GOSS_VERSION := 0.3.5
 SOLR_URL=http://archive.apache.org/dist/lucene/solr
 SOLR36_VERSION=3.6.2
 SOLR49_VERSION=4.9.1
+JETTY8_VERSION=8.1.10
 
 all: pull build
 
 build: solr3 solr4
+
+build/jetty-$(JETTY8_VERSION)/jetty.tgz:
+	# fetch archive
+	mkdir -p build/jetty-$(JETTY8_VERSION)
+	curl $(SOLR_URL)/$(SOLR49_VERSION)/solr-$(SOLR49_VERSION).tgz > build/jetty-$(JETTY8_VERSION)/jetty.tgz
+
+build/jetty-$(JETTY8_VERSION)/jetty: build/jetty-$(JETTY8_VERSION)/jetty.tgz
+	mkdir -p build/jetty-$(JETTY8_VERSION)/jetty
+	#only extract jetty
+	tar --strip-components=2 -C build/jetty-$(JETTY8_VERSION)/jetty \
+      -xzf build/jetty-$(JETTY8_VERSION)/jetty.tgz solr-$(SOLR49_VERSION)/example/start.jar
+	#extract jetty lib
+	tar --strip-components=2 -C build/jetty-$(JETTY8_VERSION)/jetty \
+      -xzf build/jetty-$(JETTY8_VERSION)/jetty.tgz solr-$(SOLR49_VERSION)/example/lib
+	#extract jetty etc
+	tar --strip-components=2 -C build/jetty-$(JETTY8_VERSION)/jetty \
+      -xzf build/jetty-$(JETTY8_VERSION)/jetty.tgz solr-$(SOLR49_VERSION)/example/etc
+	#extract jetty contexts
+	tar --strip-components=2 -C build/jetty-$(JETTY8_VERSION)/jetty \
+      -xzf build/jetty-$(JETTY8_VERSION)/jetty.tgz solr-$(SOLR49_VERSION)/example/contexts
 
 build/$(SOLR36_VERSION)/solr.tgz:
 	# fetch archive
@@ -37,7 +58,7 @@ build/$(SOLR49_VERSION)/solr: build/$(SOLR49_VERSION)/solr.tgz
 	tar --strip-components=1 -C build/$(SOLR49_VERSION)/solr \
     -xzf build/$(SOLR49_VERSION)/solr.tgz solr-$(SOLR49_VERSION)/contrib
 
-solr3: build/$(SOLR36_VERSION)/solr
+solr3: build/$(SOLR36_VERSION)/solr build/jetty-$(JETTY8_VERSION)/jetty
 	docker build -t bearstech/solr:3 -f Dockerfile.36 .
 	docker tag bearstech/solr:3 bearstech/solr:3.6
 

@@ -4,9 +4,11 @@ FROM bearstech/debian:stretch
 ENV DEBIAN_FRONTEND noninteractive
 
 ENV SOLR_VERSION=3.6.2
+ENV JETTY_VERSION=8.1.10
 ENV SOLR_PORT=8983
 
-ENV BUILD_DIR=build/$SOLR_VERSION/solr
+ENV BUILD_DIR_SORL=build/$SOLR_VERSION/solr
+ENV BUILD_DIR_JETTY=build/jetty-$JETTY_VERSION/jetty
 
 # we need openjdk
 RUN set -eux \
@@ -20,15 +22,18 @@ RUN set -eux \
         # data dir
     &&  mkdir /var/lib/solr
 
-# only take what we need from example directory
-COPY $BUILD_DIR/etc/ /opt/solr/etc/
-COPY $BUILD_DIR/lib/ /opt/solr/lib/
-COPY $BUILD_DIR/webapps/ /opt/solr/webapps/
-COPY $BUILD_DIR/contrib/ /opt/solr/contrib/
-COPY $BUILD_DIR/start.jar /opt/solr/
+# only take what we need from solr build directory
+COPY $BUILD_DIR_SORL/webapps/ /opt/solr/webapps/
+COPY $BUILD_DIR_SORL/contrib/ /opt/solr/contrib/
+COPY $BUILD_DIR_SORL/solr/solr.xml /opt/solr/solr/
+COPY $BUILD_DIR_SORL/solr/conf/ /opt/solr/solr/conf
 
-COPY $BUILD_DIR/solr/solr.xml /opt/solr/solr/
-COPY $BUILD_DIR/solr/conf/ /opt/solr/solr/conf
+# get jetty
+COPY $BUILD_DIR_JETTY/start.jar /opt/solr/
+COPY $BUILD_DIR_JETTY/etc/ /opt/solr/etc/
+COPY $BUILD_DIR_JETTY/lib/ /opt/solr/lib/
+COPY $BUILD_DIR_JETTY/contexts/ /opt/solr/contexts/
+COPY log4j.properties.jetty-8.1.10 /opt/solr/resources/log4j.properties
 
 # Run Apache Solr
 EXPOSE $SOLR_PORT

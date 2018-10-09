@@ -26,12 +26,12 @@ COPY $BUILD_DIR/lib/ /opt/solr/lib/
 COPY $BUILD_DIR/webapps/ /opt/solr/webapps/
 COPY $BUILD_DIR/contrib/ /opt/solr/contrib/
 COPY $BUILD_DIR/start.jar /opt/solr/
-COPY log4j.properties.49 /opt/solr/resources/log4j.properties
 COPY $BUILD_DIR/contexts/ /opt/solr/contexts/
-
-
 COPY $BUILD_DIR/solr/solr.xml /opt/solr/solr/
 COPY $BUILD_DIR/solr/collection1/ /opt/solr/solr/collection1/
+
+# configure log4j
+COPY log4j.properties.jetty-8.1.10 /opt/solr/resources/log4j.properties
 
 # Run Apache Solr
 EXPOSE $SOLR_PORT
