@@ -3,10 +3,11 @@ GOSS_VERSION := 0.3.5
 
 SOLR_URL=http://archive.apache.org/dist/lucene/solr
 SOLR36_VERSION=3.6.2
+SOLR49_VERSION=4.9.1
 
 all: pull build
 
-build: solr3
+build: solr3 solr4
 
 build/$(SOLR36_VERSION)/solr.tgz:
 	# fetch archive
@@ -22,10 +23,28 @@ build/$(SOLR36_VERSION)/solr: build/$(SOLR36_VERSION)/solr.tgz
 	tar --strip-components=1 -C build/$(SOLR36_VERSION)/solr \
 		-xzf build/$(SOLR36_VERSION)/solr.tgz apache-solr-$(SOLR36_VERSION)/contrib
 
+build/$(SOLR49_VERSION)/solr.tgz:
+	# fetch archive
+	mkdir -p build/$(SOLR49_VERSION)
+	curl $(SOLR_URL)/$(SOLR49_VERSION)/solr-$(SOLR49_VERSION).tgz > build/$(SOLR49_VERSION)/solr.tgz
+
+build/$(SOLR49_VERSION)/solr: build/$(SOLR49_VERSION)/solr.tgz
+	mkdir -p build/$(SOLR49_VERSION)/solr
+	#only extract example (contains solr + jetty)
+	tar --strip-components=2 -C build/$(SOLR49_VERSION)/solr \
+      -xzf build/$(SOLR49_VERSION)/solr.tgz solr-$(SOLR49_VERSION)/example
+	# only extract contrib (contains additionals solr libs)
+	tar --strip-components=1 -C build/$(SOLR49_VERSION)/solr \
+    -xzf build/$(SOLR49_VERSION)/solr.tgz solr-$(SOLR49_VERSION)/contrib
+
 solr3: build/$(SOLR36_VERSION)/solr
 	docker build -t bearstech/solr:3 -f Dockerfile.36 .
 	docker tag bearstech/solr:3 bearstech/solr:3.6
-	docker tag bearstech/solr:3 bearstech/solr:latest
+
+solr4: build/$(SOLR49_VERSION)/solr
+	docker build -t bearstech/solr:4 -f Dockerfile.49 .
+	docker tag bearstech/solr:4 bearstech/solr:4.9
+	docker tag bearstech/solr:4 bearstech/solr:latest
 
 pull:
 	docker pull bearstech/debian:stretch
@@ -33,11 +52,15 @@ pull:
 push:
 	docker push bearstech/solr:3
 	docker push bearstech/solr:3.6
+	docker push bearstech/solr:4
+	docker push bearstech/solr:4.9
 	docker push bearstech/solr:latest
 
 remove_image:
 	docker rmi bearstech/solr:3
 	docker rmi bearstech/solr:3.6
+	docker rmi bearstech/solr:4
+	docker rmi bearstech/solr:4.9
 	docker rmi bearstech/solr:latest
 
 bin/goss:

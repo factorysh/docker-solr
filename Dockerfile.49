@@ -3,7 +3,7 @@ FROM bearstech/debian:stretch
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV SOLR_VERSION=3.6.2
+ENV SOLR_VERSION=4.9.1
 ENV SOLR_PORT=8983
 
 ENV BUILD_DIR=build/$SOLR_VERSION/solr
@@ -28,7 +28,7 @@ COPY $BUILD_DIR/contrib/ /opt/solr/contrib/
 COPY $BUILD_DIR/start.jar /opt/solr/
 
 COPY $BUILD_DIR/solr/solr.xml /opt/solr/solr/
-COPY $BUILD_DIR/solr/conf/ /opt/solr/solr/conf
+COPY $BUILD_DIR/solr/collection1/ /opt/solr/solr/collection1/
 
 # Run Apache Solr
 EXPOSE $SOLR_PORT
