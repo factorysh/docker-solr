@@ -1,0 +1,50 @@
+# use bearstech stretch
+FROM bearstech/debian:stretch
+
+ENV DEBIAN_FRONTEND noninteractive
+
+ENV SOLR_VERSION=6.4.2
+ENV SOLR_PORT=8983
+
+ENV BUILD_DIR=build/$SOLR_VERSION/solr
+
+ARG uid=1001
+
+# we need openjdk
+RUN set -eux \
+    &&  apt-get update \
+    &&  apt-get install -y --no-install-recommends \
+                    openjdk-8-jre-headless \
+    &&  apt-get clean \
+    &&  rm -rf /var/lib/apt/lists/* \
+    # solr installation dir
+    &&  mkdir -p /opt/solr \
+    # config dir /etc/solr/conf
+    #&&  mkdir -p /etc/solr/conf \
+    #&&  chmod 0777 /etc/solr/conf \
+    #&&  ln -s /etc/solr/conf /opt/solr/solr/collection1/conf \
+    # data dir /var/lib/solr/data
+    &&  useradd -m solr --home /var/lib/solr --uid ${uid} --shell /bin/bash \
+    &&  mkdir -p /var/lib/solr/data/logs
+
+# install to /opt/solr
+COPY $BUILD_DIR /opt/solr/
+RUN ln -s /opt/solr/bin/solr.in.sh /etc/default/solr.in.sh
+RUN   echo "SOLR_PID_DIR=/var/lib/solr/data" >> /etc/default/solr.in.sh
+RUN   echo "SOLR_HOME=/var/lib/solr/data" >> /etc/default/solr.in.sh
+RUN   echo "SOLR_LOGS_DIR=/var/lib/solr/data/logs/" /etc/default/solr.in.sh
+RUN ln -s /var/lib/solr/data/logs //opt/solr/server/logs
+RUN cp -r  /opt/solr/server/solr/* /var/lib/solr/data
+RUN chmod 0777 /etc/default/solr.in.sh
+RUN chmod 0777 /var/lib/solr/data -R
+
+# configure log4j to log only on console
+COPY log4j.properties.solr /opt/solr/server/resources/log4j.properties
+COPY log4j.properties.solr /opt/solr/example/resources/log4j.properties
+
+# Run Apache Solr
+EXPOSE $SOLR_PORT
+USER solr
+WORKDIR /var/lib/solr/data
+ENV SOLR_TIMEZONE="Europe/Paris"
+CMD ["/bin/bash", "-c", "/opt/solr/bin/solr start -f -p $SOLR_PORT"]

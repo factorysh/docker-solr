@@ -2,13 +2,16 @@
 GOSS_VERSION := 0.3.5
 
 SOLR_URL=http://archive.apache.org/dist/lucene/solr
+
 SOLR35_VERSION=3.5.0
 SOLR49_VERSION=4.9.1
+SOLR64_VERSION=6.4.2
+
 JETTY8_VERSION=8.1.10
 
 all: pull build
 
-build: solr3 solr4
+build: solr3 solr4 solr6
 
 build/jetty-$(JETTY8_VERSION)/jetty.tgz:
 	# fetch archive
@@ -34,7 +37,6 @@ build/$(SOLR35_VERSION)/solr.tgz:
 	# fetch archive
 	mkdir -p build/$(SOLR35_VERSION)
 	curl $(SOLR_URL)/$(SOLR35_VERSION)/apache-solr-$(SOLR35_VERSION).tgz > build/$(SOLR35_VERSION)/solr.tgz
-
 build/$(SOLR35_VERSION)/solr: build/$(SOLR35_VERSION)/solr.tgz
 	mkdir -p build/$(SOLR35_VERSION)/solr
 	#only extract example (contains solr + jetty)
@@ -44,11 +46,11 @@ build/$(SOLR35_VERSION)/solr: build/$(SOLR35_VERSION)/solr.tgz
 	tar --strip-components=1 -C build/$(SOLR35_VERSION)/solr \
     -xzf build/$(SOLR35_VERSION)/solr.tgz apache-solr-$(SOLR35_VERSION)/contrib
 	sed -e 's/solr\.velocity\.enabled:true/solr.velocity.enabled:false/' -i build/$(SOLR35_VERSION)/solr/solr/conf/solrconfig.xml
+
 build/$(SOLR49_VERSION)/solr.tgz:
 	# fetch archive
 	mkdir -p build/$(SOLR49_VERSION)
 	curl $(SOLR_URL)/$(SOLR49_VERSION)/solr-$(SOLR49_VERSION).tgz > build/$(SOLR49_VERSION)/solr.tgz
-
 build/$(SOLR49_VERSION)/solr: build/$(SOLR49_VERSION)/solr.tgz
 	mkdir -p build/$(SOLR49_VERSION)/solr
 	#only extract example (contains solr + jetty)
@@ -58,6 +60,24 @@ build/$(SOLR49_VERSION)/solr: build/$(SOLR49_VERSION)/solr.tgz
 	tar --strip-components=1 -C build/$(SOLR49_VERSION)/solr \
     -xzf build/$(SOLR49_VERSION)/solr.tgz solr-$(SOLR49_VERSION)/contrib
 
+build/$(SOLR64_VERSION)/solr.tgz:
+	# fetch archive
+	mkdir -p build/$(SOLR64_VERSION)
+	curl $(SOLR_URL)/$(SOLR64_VERSION)/solr-$(SOLR64_VERSION).tgz > build/$(SOLR64_VERSION)/solr.tgz
+build/$(SOLR64_VERSION)/solr: build/$(SOLR64_VERSION)/solr.tgz
+	mkdir -p build/$(SOLR64_VERSION)/solr
+	#extract full package
+	tar --strip-components=1 -C build/$(SOLR64_VERSION)/solr \
+      -xzf build/$(SOLR64_VERSION)/solr.tgz
+	# remove old logs
+	rm -rf build/$(SOLR64_VERSION)/solr/server/logs
+	#change rights
+	find build/$(SOLR64_VERSION)/solr -type d -print0 | xargs -0 chmod 0755
+	find build/$(SOLR64_VERSION)/solr -type f -print0 | xargs -0 chmod 0644
+	chmod -R 0755 build/$(SOLR64_VERSION)/solr/bin
+	# move install script
+	mv build/$(SOLR64_VERSION)/solr/bin/install_solr_service.sh build/$(SOLR64_VERSION)/
+
 solr3: build/$(SOLR35_VERSION)/solr build/jetty-$(JETTY8_VERSION)/jetty
 	docker build -t bearstech/solr:3 -f Dockerfile.35 .
 	docker tag bearstech/solr:3 bearstech/solr:3.5
@@ -65,6 +85,10 @@ solr3: build/$(SOLR35_VERSION)/solr build/jetty-$(JETTY8_VERSION)/jetty
 solr4: build/$(SOLR49_VERSION)/solr
 	docker build -t bearstech/solr:4 -f Dockerfile.49 .
 	docker tag bearstech/solr:4 bearstech/solr:4.9
+
+solr6: build/$(SOLR64_VERSION)/solr
+	docker build -t bearstech/solr:4 -f Dockerfile.64 .
+	docker tag bearstech/solr:4 bearstech/solr:6.4
 	docker tag bearstech/solr:4 bearstech/solr:latest
 
 pull:
