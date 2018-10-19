@@ -170,6 +170,11 @@ remove_image:
 	docker rmi bearstech/solr:3.5
 	docker rmi bearstech/solr:4
 	docker rmi bearstech/solr:4.9
+	docker rmi bearstech/solr:6
+	docker rmi bearstech/solr:6.6
+	docker rmi bearstech/solr:6.4
+	docker rmi bearstech/solr:7
+	docker rmi bearstech/solr:7.5
 	docker rmi bearstech/solr:latest
 
 bin/goss:
