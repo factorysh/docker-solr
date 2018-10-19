@@ -96,9 +96,9 @@ solr4: build/$(SOLR49_VERSION)/solr
 	docker tag bearstech/solr:4 bearstech/solr:4.9
 
 solr6: build/$(SOLR64_VERSION)/solr
-	docker build -t bearstech/solr:4 -f Dockerfile.64 .
-	docker tag bearstech/solr:4 bearstech/solr:6.4
-	docker tag bearstech/solr:4 bearstech/solr:latest
+	docker build -t bearstech/solr:6 -f Dockerfile.64 .
+	docker tag bearstech/solr:6 bearstech/solr:6.4
+	docker tag bearstech/solr:6 bearstech/solr:latest
 
 pull:
 	docker pull bearstech/debian:stretch
