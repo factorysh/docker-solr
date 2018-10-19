@@ -20,31 +20,26 @@ RUN set -eux \
     # solr installation dir
     &&  mkdir -p /opt/solr \
     # config dir /etc/solr/conf
-    #&&  mkdir -p /etc/solr/conf \
-    #&&  chmod 0777 /etc/solr/conf \
-    #&&  ln -s /etc/solr/conf /opt/solr/solr/collection1/conf \
+    &&  mkdir -p /etc/solr/conf \
+    &&  chmod 0777 /etc/solr/conf \
     # data dir /var/lib/solr/data
-    &&  useradd -m solr --home /var/lib/solr --uid ${uid} --shell /bin/bash \
-    &&  mkdir -p /var/lib/solr/data/logs
+    &&  mkdir -p /var/lib/solr/data/ \
+    &&  chmod 0777 /var/lib/solr/data
 
 # install to /opt/solr
 COPY $BUILD_DIR /opt/solr/
-RUN ln -s /opt/solr/bin/solr.in.sh /etc/default/solr.in.sh
-RUN   echo "SOLR_PID_DIR=/var/lib/solr/data" >> /etc/default/solr.in.sh
-RUN   echo "SOLR_HOME=/var/lib/solr/data" >> /etc/default/solr.in.sh
-RUN   echo "SOLR_LOGS_DIR=/var/lib/solr/data/logs/" /etc/default/solr.in.sh
-RUN ln -s /var/lib/solr/data/logs //opt/solr/server/logs
-RUN cp -r  /opt/solr/server/solr/* /var/lib/solr/data
-RUN chmod 0777 /etc/default/solr.in.sh
-RUN chmod 0777 /var/lib/solr/data -R
+RUN mkdir /opt/solr/server/solr/core1
+RUN chmod 0777 /opt/solr/server/solr/core1
+RUN cp -r /opt/solr/server/solr/configsets/data_driven_schema_configs/conf/* /etc/solr/conf
+RUN  echo "name=core1" > /opt/solr/server/solr/core1/core.properties
+RUN ln -s /etc/solr/conf /opt/solr/server/solr/core1/conf
 
 # configure log4j to log only on console
 COPY log4j.properties.solr /opt/solr/server/resources/log4j.properties
-COPY log4j.properties.solr /opt/solr/example/resources/log4j.properties
 
 # Run Apache Solr
 EXPOSE $SOLR_PORT
-USER solr
-WORKDIR /var/lib/solr/data
+WORKDIR /opt/solr/server
 ENV SOLR_TIMEZONE="Europe/Paris"
-CMD ["/bin/bash", "-c", "/opt/solr/bin/solr start -f -p $SOLR_PORT"]
+
+CMD ["/bin/bash", "-c", "java -server -Xms512m -Xmx512m -XX:NewRatio=3 -XX:SurvivorRatio=4 -XX:TargetSurvivorRatio=90 -XX:MaxTenuringThreshold=8 -XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:ConcGCThreads=4 -XX:ParallelGCThreads=4 -XX:+CMSScavengeBeforeRemark -XX:PretenureSizeThreshold=64m -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=50 -XX:CMSMaxAbortablePrecleanTime=6000 -XX:+CMSParallelRemarkEnabled -XX:+ParallelRefProcEnabled -XX:-OmitStackTraceInFastThrow -Djetty.port=$SOLR_PORT -DSTOP.PORT=7983 -DSTOP.KEY=solrrocks -Duser.timezone=$SOLR_TIMEZONE -Djetty.home=/opt/solr/server -Dsolr.data.dir=/var/lib/solr/data -Dsolr.install.dir=/opt/solr -Xss256k -jar start.jar --module=http"]

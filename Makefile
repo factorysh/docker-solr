@@ -46,6 +46,9 @@ build/$(SOLR35_VERSION)/solr: build/$(SOLR35_VERSION)/solr.tgz
 	tar --strip-components=1 -C build/$(SOLR35_VERSION)/solr \
     -xzf build/$(SOLR35_VERSION)/solr.tgz apache-solr-$(SOLR35_VERSION)/contrib
 	sed -e 's/solr\.velocity\.enabled:true/solr.velocity.enabled:false/' -i build/$(SOLR35_VERSION)/solr/solr/conf/solrconfig.xml
+	#change rights
+	find build/$(SOLR35_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
+	find build/$(SOLR35_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
 
 build/$(SOLR49_VERSION)/solr.tgz:
 	# fetch archive
@@ -59,6 +62,9 @@ build/$(SOLR49_VERSION)/solr: build/$(SOLR49_VERSION)/solr.tgz
 	# only extract contrib (contains additionals solr libs)
 	tar --strip-components=1 -C build/$(SOLR49_VERSION)/solr \
     -xzf build/$(SOLR49_VERSION)/solr.tgz solr-$(SOLR49_VERSION)/contrib
+	#change rights
+	find build/$(SOLR49_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
+	find build/$(SOLR49_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
 
 build/$(SOLR64_VERSION)/solr.tgz:
 	# fetch archive
@@ -66,17 +72,20 @@ build/$(SOLR64_VERSION)/solr.tgz:
 	curl $(SOLR_URL)/$(SOLR64_VERSION)/solr-$(SOLR64_VERSION).tgz > build/$(SOLR64_VERSION)/solr.tgz
 build/$(SOLR64_VERSION)/solr: build/$(SOLR64_VERSION)/solr.tgz
 	mkdir -p build/$(SOLR64_VERSION)/solr
-	#extract full package
+	#extract contrib
 	tar --strip-components=1 -C build/$(SOLR64_VERSION)/solr \
-      -xzf build/$(SOLR64_VERSION)/solr.tgz
+      -xzf build/$(SOLR64_VERSION)/solr.tgz solr-$(SOLR64_VERSION)/contrib
+	# extract dist
+	tar --strip-components=1 -C build/$(SOLR64_VERSION)/solr \
+      -xzf build/$(SOLR64_VERSION)/solr.tgz solr-$(SOLR64_VERSION)/dist
+	# extract server
+	tar --strip-components=1 -C build/$(SOLR64_VERSION)/solr \
+      -xzf build/$(SOLR64_VERSION)/solr.tgz solr-$(SOLR64_VERSION)/server
 	# remove old logs
 	rm -rf build/$(SOLR64_VERSION)/solr/server/logs
 	#change rights
-	find build/$(SOLR64_VERSION)/solr -type d -print0 | xargs -0 chmod 0755
-	find build/$(SOLR64_VERSION)/solr -type f -print0 | xargs -0 chmod 0644
-	chmod -R 0755 build/$(SOLR64_VERSION)/solr/bin
-	# move install script
-	mv build/$(SOLR64_VERSION)/solr/bin/install_solr_service.sh build/$(SOLR64_VERSION)/
+	find build/$(SOLR64_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
+	find build/$(SOLR64_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
 
 solr3: build/$(SOLR35_VERSION)/solr build/jetty-$(JETTY8_VERSION)/jetty
 	docker build -t bearstech/solr:3 -f Dockerfile.35 .
