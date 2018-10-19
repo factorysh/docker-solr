@@ -108,6 +108,8 @@ push:
 	docker push bearstech/solr:3.5
 	docker push bearstech/solr:4
 	docker push bearstech/solr:4.9
+	docker push bearstech/solr:6
+	docker push bearstech/solr:6.4
 	docker push bearstech/solr:latest
 
 remove_image:
