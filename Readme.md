@@ -7,7 +7,7 @@ Les images sont fournies avec un seul core avec une configuration d'exemple four
 - Les indexes et data sont stockés /var/lib/solr/data .
 - Utilisez un volume sur /var/lib/solr/data si vous souhaitez des données persistantes !
 
-Quand vous remplacerer les fichiers de configuration de Solr, assurez vous que votre fichier /etc/solr/conf/solrconfig.xml contienne :
+Quand vous remplacez les fichiers de configuration de Solr, assurez vous que votre fichier /etc/solr/conf/solrconfig.xml contient :
 ```
 <dataDir>${solr.data.dir:}</dataDir>
 ```
