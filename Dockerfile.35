@@ -5,7 +5,6 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ENV SOLR_VERSION=3.5.0
 ENV JETTY_VERSION=8.1.10
-ENV SOLR_PORT=8983
 
 ENV BUILD_DIR_SORL=build/$SOLR_VERSION/solr
 ENV BUILD_DIR_JETTY=build/jetty-$JETTY_VERSION/jetty
@@ -42,7 +41,7 @@ COPY $BUILD_DIR_JETTY/contexts/ /opt/solr/contexts/
 COPY log4j.properties.jetty-8.1.10 /opt/solr/resources/log4j.properties
 
 # Run Apache Solr
-EXPOSE $SOLR_PORT
+EXPOSE 8983
 WORKDIR /opt/solr
 ENV SOLR_TIMEZONE="Europe/Paris"
-CMD ["/bin/bash", "-c", "java -jar start.jar", "-Djetty.port=$SOLR_PORT", "-Dsolr.solr.home=/opt/solr/solr", "-Dsolr.solr.data.dir=/var/lib/solr/data"]
+CMD ["/bin/bash", "-c", "java -jar start.jar", "-Djetty.port=8983", "-Dsolr.solr.home=/opt/solr/solr", "-Dsolr.solr.data.dir=/var/lib/solr/data"]
