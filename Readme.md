@@ -24,15 +24,23 @@ Versions de Sorl disponibles : https://hub.docker.com/r/bearstech/solr/tags/
 Utilisation
 -----------
 
-Exemple de Dockerfile :
+Exemple de Dockerfile "factory" :
 ```
 # use bearstech solr (stretch)
 FROM bearstech/solr:3.5
+
+# add user solr 
+ARG uid=1001
+RUN useradd solr -d /opt/solr --uid ${uid} --shell /bin/bash
 
 # Remove default configuration files
 RUN rm -rf /etc/solr/conf/*
 # Copy my configuration files
 COPY /conf/solr /etc/solr/conf
+RUN chown ${uid}.${uid} /opt/solr -R
+RUN chown ${uid}.${uid} /var/lib/solr/
+
+USER solr
 
 # Default timezone used by solr
 #ENV SOLR_TIMEZONE="Europe/Paris"
