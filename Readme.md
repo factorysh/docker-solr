@@ -3,9 +3,15 @@ Solr images for docker
 
 Les images sont fournies avec un seul core avec une configuration d'exemple fournie par défaut.
 
-La configuration est dans /etc/solr/conf .
-Les indexes et data sont stockés /var/lib/solr/data .
-Utilisez un volume sur /var/lib/solr si vous souhaitez des données persistantes !
+- La configuration est dans /etc/solr/conf .
+- Les indexes et data sont stockés /var/lib/solr/data .
+- Utilisez un volume sur /var/lib/solr si vous souhaitez des données persistantes !
+
+Quand vous remplacerer les fichiers de configuration de Solr, assurez vous que votre fichier /etc/solr/conf/solrconfig.xml contienne :
+```
+<dataDir>${solr.data.dir:}</dataDir>
+```
+
 
 Solr-Jetty http écoute sur le port 8983/tcp
 
@@ -26,6 +32,9 @@ FROM bearstech/solr:3.5
 RUN rm -rf /etc/solr/conf/*
 # Copy my configuration files
 COPY /conf/solr /etc/solr/conf
+
+# Default timezone used by solr
+#ENV SOLR_TIMEZONE="Europe/Paris"
 ```
 
 Exemple de docker-compose.yml "factory":
