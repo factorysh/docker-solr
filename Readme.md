@@ -5,7 +5,7 @@ Les images sont fournies avec un seul core avec une configuration d'exemple four
 
 - La configuration est dans /etc/solr/conf .
 - Les indexes et data sont stockés /var/lib/solr/data .
-- Utilisez un volume sur /var/lib/solr si vous souhaitez des données persistantes !
+- Utilisez un volume sur /var/lib/solr/data si vous souhaitez des données persistantes !
 
 Quand vous remplacerer les fichiers de configuration de Solr, assurez vous que votre fichier /etc/solr/conf/solrconfig.xml contienne :
 ```
@@ -37,8 +37,11 @@ RUN useradd solr -d /opt/solr --uid ${uid} --shell /bin/bash
 RUN rm -rf /etc/solr/conf/*
 # Copy my configuration files
 COPY /conf/solr /etc/solr/conf
+
+# Adjust owner
 RUN chown ${uid}.${uid} /opt/solr -R
-RUN chown ${uid}.${uid} /var/lib/solr/
+RUN chown ${uid}.${uid} /var/lib/solr -R
+RUN chown ${uid}.${uid} /etc/solr -R
 
 USER solr
 
