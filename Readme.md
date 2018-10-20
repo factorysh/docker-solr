@@ -16,7 +16,7 @@ Quand vous remplacerer les fichiers de configuration de Solr, assurez vous que v
 Solr-Jetty http écoute sur le port 8983/tcp
 
 L'url de sorl est :
-- /solr/ pour sorl 3.x et 4.x, exemple : http://solr:8983/solr//admin/ping
+- /solr/ pour sorl 3.x et 4.x, exemple : http://solr:8983/solr/admin/ping
 - /solr/core1/ pour Sorl 6 et solr 7, exemple : http://solr:8983/solr/core1/admin/ping
 
 
