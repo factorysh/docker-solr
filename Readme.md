@@ -54,7 +54,7 @@ Exemple de docker-compose.yml "factory":
     solr:
         image: $CI_REGISTRY_IMAGE/solr:latest
         volumes:
-            - ./data/scraping_solr_data:/var/lib/solr
+            - ./data/scraping_solr_data:/var/lib/solr/data
         expose:
             - 8983
 
@@ -64,7 +64,9 @@ Exemple de docker-compose.yml "factory":
             CI_ENVIRONMENT_NAME: ${CI_ENVIRONMENT_NAME}
             X_SOLR_HOST: ${X_SOLR_HOST:-solr}
             X_SOLR_PORT: ${X_SOLR_PORT:-8983}
-            X_SORL_URL:  ${X_SOLR_URL:-/solr/}
+            X_SORL_URL:  ${X_SOLR_URL:-/solr}
+            # url is solr/core1 when using Sorl 6.x and 7.x
+            #X_SORL_URL:  ${X_SOLR_URL:-/solr/core1} 
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_HOST: ${MYSQL_HOST:-mysql}
             MYSQL_USER: ${MYSQL_USER}

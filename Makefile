@@ -183,18 +183,18 @@ bin/goss:
 	chmod +x bin/goss
 
 test3.5: bin/goss
-	make -C tests_solr tests SOLR_VERSION=3.5
+	make -C tests_solr tests SOLR_VERSION=3.5 TEST_URL=/solr/admin/ping
 
 test4.9: bin/goss
-	make -C tests_solr tests SOLR_VERSION=4.9
+	make -C tests_solr tests SOLR_VERSION=4.9 TEST_URL=/solr/admin/ping
 
 test6.4: bin/goss
-	make -C tests_solr tests SOLR_VERSION=6.4
+	make -C tests_solr tests SOLR_VERSION=6.4 TEST_URL=/solr/core1/admin/ping
 
 test6.6: bin/goss
-	make -C tests_solr tests SOLR_VERSION=6.6
+	make -C tests_solr tests SOLR_VERSION=6.6 TEST_URL=/solr/core1/admin/ping
 
 test7.5: bin/goss
-	make -C tests_solr tests SOLR_VERSION=7.5
+	make -C tests_solr tests SOLR_VERSION=7.5 TEST_URL=/solr/core1/admin/ping
 
 tests: | test3.5 test4.9 test6.4 test6.6 test7.5

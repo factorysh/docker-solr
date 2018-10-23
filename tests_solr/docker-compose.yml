@@ -8,6 +8,8 @@ services:
             - '8983:8983'
 
     client:
+        environment:
+            TEST_URL: ${TEST_URL}
         image: bearstech/debian:stretch
         command: >
             goss -g solr.yaml validate

@@ -1,7 +1,7 @@
 ---
 
 http:
-    http://solr:8983/solr/core1/admin/ping:
+    http://solr:8983{{.Env.TEST_URL}}:
         status: 200
         no-follow-redirects: false
         timeout: 1000
