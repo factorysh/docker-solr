@@ -3,13 +3,18 @@
 version: '3'
 services:
     solr:
-        image: bearstech/solr:latest
+        image: bearstech/solr:${SOLR_VERSION}
         ports:
             - '8983:8983'
 
-    goss:
+    client:
         image: bearstech/debian:stretch
-        command: "sleep 600000000000000000000000"
+        command: >
+            goss -g solr.yaml validate
+                --retry-timeout 30s
+                --sleep 1s
+                --max-concurrent 4
+                --format documentation
         volumes:
             - ../bin/goss:/usr/bin/goss
             - ../tests_solr:/goss

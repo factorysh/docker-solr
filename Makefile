@@ -182,11 +182,19 @@ bin/goss:
 	curl -o bin/goss -L https://github.com/aelsabbahy/goss/releases/download/v${GOSS_VERSION}/goss-linux-amd64
 	chmod +x bin/goss
 
-test: bin/goss
-	@docker-compose -f tests_solr/docker-compose.yml down || true
-	@docker-compose -f tests_solr/docker-compose.yml up -d
-	@docker-compose -f tests_solr/docker-compose.yml exec -T goss \
-		goss -g solr.yaml validate --retry-timeout 30s --sleep 1s --max-concurrent 4 --format documentation
-	@docker-compose -f tests_solr/docker-compose.yml down || true
+test3.5: bin/goss
+	make -C tests_solr tests SOLR_VERSION=3.5
 
-tests: test
+test4.9: bin/goss
+	make -C tests_solr tests SOLR_VERSION=4.9
+
+test6.4: bin/goss
+	make -C tests_solr tests SOLR_VERSION=6.4
+
+test6.6: bin/goss
+	make -C tests_solr tests SOLR_VERSION=6.6
+
+test7.5: bin/goss
+	make -C tests_solr tests SOLR_VERSION=7.5
+
+tests: | test3.5 test4.9 test6.4 test6.6 test7.5
