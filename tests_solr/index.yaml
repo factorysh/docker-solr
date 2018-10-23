@@ -1,7 +1,7 @@
 ---
 
 http:
-    http://solr:8983{{.Env.TEST_URL}}:
+    http://solr:8983{{.Vars.test_url}}:
         status: 200
         no-follow-redirects: false
         timeout: 1000
