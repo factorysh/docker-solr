@@ -1,0 +1,10 @@
+---
+
+http:
+    # check core status
+    http://solr:8983{{.Env.BASE_URL}}admin/ping?wt=json:
+        status: 200
+        no-follow-redirects: false
+        timeout: 1000
+        body:
+            - /"status":"OK"/

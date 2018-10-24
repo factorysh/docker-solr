@@ -1,0 +1,13 @@
+---
+
+http:
+    # get solr system infos
+    http://solr:8983{{.Env.BASE_URL}}admin/system?wt=json:
+        status: 200
+        no-follow-redirects: false
+        timeout: 1000
+        body:
+            # check where indexes are stored
+            - /"index":"\/var\/lib\/solr\/data\/index"/
+            # check if version matches
+            - /"solr-impl-version":"{{.Env.SOLR_VERSION}}/

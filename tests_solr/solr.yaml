@@ -1,6 +1,7 @@
 ---
 
 gossfile:
-    core-status.yml: {}
-    index-dir.yml: {}
-    query-docs.yml: {}
+    solr-core-status.yml: {}
+    solr-index-dir.yml: {}
+    solr-query-docs.yml: {}
+    solr-system-infos.yml: {}

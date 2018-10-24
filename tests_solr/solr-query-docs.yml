@@ -1,0 +1,13 @@
+---
+
+http:
+    # query all documents
+    http://solr:8983{{.Env.BASE_URL}}select?q=*:*&wt=json:
+        status: 200
+        no-follow-redirects: false
+        timeout: 1000
+        body:
+            # query is ok
+            - /"status":0/
+            # index is empty
+            - /"numFound":0/

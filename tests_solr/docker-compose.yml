@@ -15,7 +15,8 @@ services:
 
     client:
         environment:
-            BASE_URL: ${BASE_URL:-/solr/core1/admin/ping}
+            BASE_URL: ${BASE_URL:-/solr/core1/}
+            SOLR_VERSION: ${SOLR_VERSION}
         image: bearstech/debian:stretch
         command: >
             goss -g solr.yaml validate

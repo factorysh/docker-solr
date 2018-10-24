@@ -1,9 +1,0 @@
----
-
-http:
-    http://solr:8983{{.Env.BASE_URL}}admin/ping:
-        status: 200
-        no-follow-redirects: false
-        timeout: 1000
-        body:
-            - /status([^O]+)OK/
