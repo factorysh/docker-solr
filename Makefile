@@ -197,4 +197,7 @@ test6.6: bin/goss
 test7.5: bin/goss
 	make -C tests_solr tests SOLR_VERSION=7.5 BASE_URL=/solr/core1/
 
+down:
+	make -C tests_solr down
+
 tests: | test3.5 test4.9 test6.4 test6.6 test7.5

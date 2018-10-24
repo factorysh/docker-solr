@@ -14,3 +14,6 @@ tests:
 	@docker-compose up --abort-on-container-exit --exit-code-from client client
 	@docker-compose down || true
 	rm -rf ./test_tmp
+
+down:
+	@docker-compose down || true
