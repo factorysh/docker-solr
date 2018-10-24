@@ -1,0 +1,6 @@
+---
+
+file:
+    /var/lib/solr/data/index:
+        exists: true
+        filetype: directory

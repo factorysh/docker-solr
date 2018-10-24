@@ -7,3 +7,7 @@ http:
         timeout: 1000
         body:
             - /.*status.*OK.*/
+file:
+    /var/lib/solr/data/index:
+        exists: true
+        filetype: directory

@@ -1,15 +1,21 @@
 ---
 
 version: '3'
+
 services:
     solr:
-        image: bearstech/solr:${SOLR_VERSION}
+        image: tests/solr:${SOLR_VERSION:-latest}
+        build:
+            context: .
+            dockerfile: Dockerfile.solr
         ports:
             - '8983:8983'
+        volumes:
+            - ./test_tmp:/var/lib/solr/data
 
     client:
         environment:
-            TEST_URL: ${TEST_URL}
+            TEST_URL: ${TEST_URL:-/solr/core1/admin/ping}
         image: bearstech/debian:stretch
         command: >
             goss -g solr.yaml validate
@@ -20,6 +26,7 @@ services:
         volumes:
             - ../bin/goss:/usr/bin/goss
             - ../tests_solr:/goss
+            - ./test_tmp:/var/lib/solr/data
         working_dir: /goss
         links:
             - solr

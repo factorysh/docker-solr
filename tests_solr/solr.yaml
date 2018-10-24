@@ -1,4 +1,5 @@
 ---
 
 gossfile:
-    index.yaml: {}
+    core-status.yml: {}
+    index-dir.yml: {}
