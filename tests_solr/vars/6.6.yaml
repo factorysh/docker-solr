@@ -1,3 +1,4 @@
 ---
 
-test_url: /solr/core1/admin/ping
+base_url: /solr/core1/
+version: 6.6

@@ -2,7 +2,7 @@
 
 http:
     # get solr system infos
-    http://solr:8983{{.Env.BASE_URL}}admin/system?wt=json:
+    http://solr:8983{{.Vars.base_url}}admin/system?wt=json:
         status: 200
         no-follow-redirects: false
         timeout: 1000
@@ -10,4 +10,4 @@ http:
             # check where indexes are stored
             - /"index":"\/var\/lib\/solr\/data\/index"/
             # check if version matches
-            - /"solr-impl-version":"{{.Env.SOLR_VERSION}}/
+            - /"solr-impl-version":"{{.Vars.version}}/
