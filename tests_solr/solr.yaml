@@ -3,3 +3,4 @@
 gossfile:
     core-status.yml: {}
     index-dir.yml: {}
+    query-docs.yml: {}

@@ -1,13 +1,9 @@
 ---
 
 http:
-    http://solr:8983{{.Env.TEST_URL}}:
+    http://solr:8983{{.Env.BASE_URL}}admin/ping:
         status: 200
         no-follow-redirects: false
         timeout: 1000
         body:
-            - /.*status.*OK.*/
-file:
-    /var/lib/solr/data/index:
-        exists: true
-        filetype: directory
+            - /status([^O]+)OK/
