@@ -3,19 +3,21 @@ FROM bearstech/debian:stretch
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV SOLR_VERSION=3.5.0
-ENV JETTY_VERSION=8.1.10
-
-ENV BUILD_DIR_SORL=build/$SOLR_VERSION/solr
-ENV BUILD_DIR_JETTY=build/jetty-$JETTY_VERSION/jetty
-
 # we need openjdk
 RUN set -eux \
     &&  apt-get update \
     &&  apt-get install -y --no-install-recommends \
                     openjdk-8-jre-headless \
     &&  apt-get clean \
-    &&  rm -rf /var/lib/apt/lists/* \
+    &&  rm -rf /var/lib/apt/lists/*
+
+ENV SOLR_VERSION=3.5.0
+ENV JETTY_VERSION=8.1.10
+
+ENV BUILD_DIR_SORL=build/$SOLR_VERSION/solr
+ENV BUILD_DIR_JETTY=build/jetty-$JETTY_VERSION/jetty
+
+RUN set -eux \
     # solr installation dir
     &&  mkdir -p /opt/solr/solr/ \
     # config dir /etc/solr/conf
