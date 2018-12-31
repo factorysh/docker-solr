@@ -32,6 +32,7 @@ RUN set -eux \
 # only take what we need from solr build directory
 COPY $BUILD_DIR_SORL/webapps/ /opt/solr/webapps/
 COPY $BUILD_DIR_SORL/contrib/ /opt/solr/contrib/
+COPY $BUILD_DIR_SORL/dist/ /opt/solr/dist/
 COPY $BUILD_DIR_SORL/solr/solr.xml /opt/solr/solr/
 COPY $BUILD_DIR_SORL/solr/conf/ /etc/solr/conf
 

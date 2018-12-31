@@ -46,7 +46,7 @@ build/$(SOLR35_VERSION)/solr: build/$(SOLR35_VERSION)/solr.tgz
       -xzf build/$(SOLR35_VERSION)/solr.tgz apache-solr-$(SOLR35_VERSION)/example
 	# only extract contrib (contains additionals solr libs)
 	tar --strip-components=1 -C build/$(SOLR35_VERSION)/solr \
-    -xzf build/$(SOLR35_VERSION)/solr.tgz apache-solr-$(SOLR35_VERSION)/contrib
+    -xzf build/$(SOLR35_VERSION)/solr.tgz apache-solr-$(SOLR35_VERSION)/contrib apache-solr-$(SOLR35_VERSION)/dist
 	sed -e 's/solr\.velocity\.enabled:true/solr.velocity.enabled:false/' -i build/$(SOLR35_VERSION)/solr/solr/conf/solrconfig.xml
 	#change rights
 	find build/$(SOLR35_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
