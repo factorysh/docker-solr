@@ -15,26 +15,6 @@ all: pull build
 
 build: solr3 solr4 solr6 solr7
 
-build/jetty-$(JETTY8_VERSION)/jetty.tgz:
-	# fetch archive
-	mkdir -p build/jetty-$(JETTY8_VERSION)
-	curl $(SOLR_URL)/$(SOLR49_VERSION)/solr-$(SOLR49_VERSION).tgz > build/jetty-$(JETTY8_VERSION)/jetty.tgz
-
-build/jetty-$(JETTY8_VERSION)/jetty: build/jetty-$(JETTY8_VERSION)/jetty.tgz
-	mkdir -p build/jetty-$(JETTY8_VERSION)/jetty
-	#only extract jetty
-	tar --strip-components=2 -C build/jetty-$(JETTY8_VERSION)/jetty \
-      -xzf build/jetty-$(JETTY8_VERSION)/jetty.tgz solr-$(SOLR49_VERSION)/example/start.jar
-	#extract jetty lib
-	tar --strip-components=2 -C build/jetty-$(JETTY8_VERSION)/jetty \
-      -xzf build/jetty-$(JETTY8_VERSION)/jetty.tgz solr-$(SOLR49_VERSION)/example/lib
-	#extract jetty etc
-	tar --strip-components=2 -C build/jetty-$(JETTY8_VERSION)/jetty \
-      -xzf build/jetty-$(JETTY8_VERSION)/jetty.tgz solr-$(SOLR49_VERSION)/example/etc
-	#extract jetty contexts
-	tar --strip-components=2 -C build/jetty-$(JETTY8_VERSION)/jetty \
-      -xzf build/jetty-$(JETTY8_VERSION)/jetty.tgz solr-$(SOLR49_VERSION)/example/contexts
-
 build/$(SOLR35_VERSION)/solr.tgz:
 	# fetch archive
 	mkdir -p build/$(SOLR35_VERSION)
@@ -44,7 +24,7 @@ build/$(SOLR35_VERSION)/solr: build/$(SOLR35_VERSION)/solr.tgz
 	#only extract example (contains solr + jetty)
 	tar --strip-components=2 -C build/$(SOLR35_VERSION)/solr \
       -xzf build/$(SOLR35_VERSION)/solr.tgz apache-solr-$(SOLR35_VERSION)/example
-	# only extract contrib (contains additionals solr libs)
+	# only extract contrib + dist (contains additionals solr libs)
 	tar --strip-components=1 -C build/$(SOLR35_VERSION)/solr \
     -xzf build/$(SOLR35_VERSION)/solr.tgz apache-solr-$(SOLR35_VERSION)/contrib apache-solr-$(SOLR35_VERSION)/dist
 	sed -e 's/solr\.velocity\.enabled:true/solr.velocity.enabled:false/' -i build/$(SOLR35_VERSION)/solr/solr/conf/solrconfig.xml
@@ -61,9 +41,9 @@ build/$(SOLR49_VERSION)/solr: build/$(SOLR49_VERSION)/solr.tgz
 	#only extract example (contains solr + jetty)
 	tar --strip-components=2 -C build/$(SOLR49_VERSION)/solr \
       -xzf build/$(SOLR49_VERSION)/solr.tgz solr-$(SOLR49_VERSION)/example
-	# only extract contrib (contains additionals solr libs)
+	# extract contrib + dist (contains additionals solr libs)
 	tar --strip-components=1 -C build/$(SOLR49_VERSION)/solr \
-    -xzf build/$(SOLR49_VERSION)/solr.tgz solr-$(SOLR49_VERSION)/contrib
+    -xzf build/$(SOLR49_VERSION)/solr.tgz solr-$(SOLR49_VERSION)/contrib solr-$(SOLR49_VERSION)/dist
 	#change rights
 	find build/$(SOLR49_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
 	find build/$(SOLR49_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
@@ -74,12 +54,9 @@ build/$(SOLR64_VERSION)/solr.tgz:
 	curl $(SOLR_URL)/$(SOLR64_VERSION)/solr-$(SOLR64_VERSION).tgz > build/$(SOLR64_VERSION)/solr.tgz
 build/$(SOLR64_VERSION)/solr: build/$(SOLR64_VERSION)/solr.tgz
 	mkdir -p build/$(SOLR64_VERSION)/solr
-	#extract contrib
+	# extract contrib + dist (contains additionals solr libs)
 	tar --strip-components=1 -C build/$(SOLR64_VERSION)/solr \
-      -xzf build/$(SOLR64_VERSION)/solr.tgz solr-$(SOLR64_VERSION)/contrib
-	# extract dist
-	tar --strip-components=1 -C build/$(SOLR64_VERSION)/solr \
-      -xzf build/$(SOLR64_VERSION)/solr.tgz solr-$(SOLR64_VERSION)/dist
+      -xzf build/$(SOLR64_VERSION)/solr.tgz solr-$(SOLR64_VERSION)/contrib solr-$(SOLR64_VERSION)/dist
 	# extract server
 	tar --strip-components=1 -C build/$(SOLR64_VERSION)/solr \
       -xzf build/$(SOLR64_VERSION)/solr.tgz solr-$(SOLR64_VERSION)/server
@@ -95,12 +72,9 @@ build/$(SOLR66_VERSION)/solr.tgz:
 	curl $(SOLR_URL)/$(SOLR66_VERSION)/solr-$(SOLR66_VERSION).tgz > build/$(SOLR66_VERSION)/solr.tgz
 build/$(SOLR66_VERSION)/solr: build/$(SOLR66_VERSION)/solr.tgz
 	mkdir -p build/$(SOLR66_VERSION)/solr
-	#extract contrib
+	# extract contrib + dist (contains additionals solr libs)
 	tar --strip-components=1 -C build/$(SOLR66_VERSION)/solr \
-      -xzf build/$(SOLR66_VERSION)/solr.tgz solr-$(SOLR66_VERSION)/contrib
-	# extract dist
-	tar --strip-components=1 -C build/$(SOLR66_VERSION)/solr \
-      -xzf build/$(SOLR66_VERSION)/solr.tgz solr-$(SOLR66_VERSION)/dist
+      -xzf build/$(SOLR66_VERSION)/solr.tgz solr-$(SOLR66_VERSION)/contrib solr-$(SOLR66_VERSION)/dist
 	# extract server
 	tar --strip-components=1 -C build/$(SOLR66_VERSION)/solr \
       -xzf build/$(SOLR66_VERSION)/solr.tgz solr-$(SOLR66_VERSION)/server
@@ -116,12 +90,9 @@ build/$(SOLR75_VERSION)/solr.tgz:
 	curl $(SOLR_URL)/$(SOLR75_VERSION)/solr-$(SOLR75_VERSION).tgz > build/$(SOLR75_VERSION)/solr.tgz
 build/$(SOLR75_VERSION)/solr: build/$(SOLR75_VERSION)/solr.tgz
 	mkdir -p build/$(SOLR75_VERSION)/solr
-	#extract contrib
+	# extract contrib + dist (contains additionals solr libs)
 	tar --strip-components=1 -C build/$(SOLR75_VERSION)/solr \
-      -xzf build/$(SOLR75_VERSION)/solr.tgz solr-$(SOLR75_VERSION)/contrib
-	# extract dist
-	tar --strip-components=1 -C build/$(SOLR75_VERSION)/solr \
-      -xzf build/$(SOLR75_VERSION)/solr.tgz solr-$(SOLR75_VERSION)/dist
+      -xzf build/$(SOLR75_VERSION)/solr.tgz solr-$(SOLR75_VERSION)/contrib solr-$(SOLR75_VERSION)/dist
 	# extract server
 	tar --strip-components=1 -C build/$(SOLR75_VERSION)/solr \
       -xzf build/$(SOLR75_VERSION)/solr.tgz solr-$(SOLR75_VERSION)/server
@@ -131,7 +102,7 @@ build/$(SOLR75_VERSION)/solr: build/$(SOLR75_VERSION)/solr.tgz
 	find build/$(SOLR75_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
 	find build/$(SOLR75_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
 
-solr3: build/$(SOLR35_VERSION)/solr build/jetty-$(JETTY8_VERSION)/jetty
+solr3: build/$(SOLR35_VERSION)/solr
 	docker build -t bearstech/solr:3 -f Dockerfile.35 .
 	docker tag bearstech/solr:3 bearstech/solr:3.5
 

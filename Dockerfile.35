@@ -12,10 +12,7 @@ RUN set -eux \
     &&  rm -rf /var/lib/apt/lists/*
 
 ENV SOLR_VERSION=3.5.0
-ENV JETTY_VERSION=8.1.10
-
-ENV BUILD_DIR_SORL=build/$SOLR_VERSION/solr
-ENV BUILD_DIR_JETTY=build/jetty-$JETTY_VERSION/jetty
+ENV BUILD_DIR=build/$SOLR_VERSION/solr
 
 RUN set -eux \
     # solr installation dir
@@ -30,17 +27,16 @@ RUN set -eux \
     &&  ln -s /var/lib/solr/data /opt/solr/solr/data
 
 # only take what we need from solr build directory
-COPY $BUILD_DIR_SORL/webapps/ /opt/solr/webapps/
-COPY $BUILD_DIR_SORL/contrib/ /opt/solr/contrib/
-COPY $BUILD_DIR_SORL/dist/ /opt/solr/dist/
-COPY $BUILD_DIR_SORL/solr/solr.xml /opt/solr/solr/
-COPY $BUILD_DIR_SORL/solr/conf/ /etc/solr/conf
+COPY $BUILD_DIR/etc/ /opt/solr/etc/
+COPY $BUILD_DIR/lib/ /opt/solr/lib/
+COPY $BUILD_DIR/webapps/ /opt/solr/webapps/
+COPY $BUILD_DIR/contrib/ /opt/solr/contrib/
+COPY $BUILD_DIR/dist/ /opt/solr/dist/
+COPY $BUILD_DIR/start.jar /opt/solr/
+COPY $BUILD_DIR/solr/solr.xml /opt/solr/solr/
+COPY $BUILD_DIR/solr/conf/ /etc/solr/conf
 
-# get jetty
-COPY $BUILD_DIR_JETTY/start.jar /opt/solr/
-COPY $BUILD_DIR_JETTY/etc/ /opt/solr/etc/
-COPY $BUILD_DIR_JETTY/lib/ /opt/solr/lib/
-COPY $BUILD_DIR_JETTY/contexts/ /opt/solr/contexts/
+# configure log4j to log only on console
 COPY log4j.properties.jetty-8.1.10 /opt/solr/resources/log4j.properties
 
 # Run Apache Solr
