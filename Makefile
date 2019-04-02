@@ -1,4 +1,4 @@
-
+.PHONY: build
 GOSS_VERSION := 0.3.5
 
 SOLR_URL=http://archive.apache.org/dist/lucene/solr
@@ -115,7 +115,6 @@ solr6: build/$(SOLR64_VERSION)/solr build/$(SOLR66_VERSION)/solr
 	docker build -t bearstech/solr:6 -f Dockerfile.66 .
 	docker tag bearstech/solr:6 bearstech/solr:6.6
 
-
 solr7: build/$(SOLR75_VERSION)/solr
 	docker build -t bearstech/solr:7 -f Dockerfile.75 .
 	docker tag bearstech/solr:7 bearstech/solr:7.5
@@ -172,3 +171,6 @@ down:
 	make -C tests_solr down
 
 tests: | test3.5 test4.9 test6.4 test6.6 test7.5
+
+clean:
+	rm -rf build
