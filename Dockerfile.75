@@ -42,4 +42,7 @@ EXPOSE 8983
 WORKDIR /opt/solr/server
 ENV SOLR_TIMEZONE="Europe/Paris"
 
+ARG GIT_VERSION
+LABEL com.bearstech.source.solr=https://github.com/factorysh/docker-solr/commit/${GIT_VERSION}
+
 CMD ["/bin/bash", "-c", "java -server -Xms512m -Xmx512m -XX:NewRatio=3 -XX:SurvivorRatio=4 -XX:TargetSurvivorRatio=90 -XX:MaxTenuringThreshold=8 -XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:ConcGCThreads=4 -XX:ParallelGCThreads=4 -XX:+CMSScavengeBeforeRemark -XX:PretenureSizeThreshold=64m -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=50 -XX:CMSMaxAbortablePrecleanTime=6000 -XX:+CMSParallelRemarkEnabled -XX:+ParallelRefProcEnabled -XX:-OmitStackTraceInFastThrow -Djetty.port=8983 -Duser.timezone=$SOLR_TIMEZONE -Djetty.home=/opt/solr/server -Dsolr.data.dir=/var/lib/solr/data -Dsolr.install.dir=/opt/solr -Xss256k -jar start.jar --module=http"]
