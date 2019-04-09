@@ -43,4 +43,8 @@ COPY log4j.properties.jetty-8.1.10 /opt/solr/resources/log4j.properties
 EXPOSE 8983
 WORKDIR /opt/solr
 ENV SOLR_TIMEZONE="Europe/Paris"
+
+ARG GIT_VERSION
+LABEL com.bearstech.source.redis=https://github.com/factorysh/docker-redis/commit/${GIT_VERSION}
+
 CMD ["/bin/bash", "-c", "java -jar start.jar", "-Djetty.port=8983", "-Dsolr.solr.home=/opt/solr/solr", "-Dsolr.solr.data.dir=/var/lib/solr/data"]
