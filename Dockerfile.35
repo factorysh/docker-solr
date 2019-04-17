@@ -47,4 +47,7 @@ ENV SOLR_TIMEZONE="Europe/Paris"
 ARG GIT_VERSION
 LABEL com.bearstech.source.solr=https://github.com/factorysh/docker-solr/commit/${GIT_VERSION}
 
+ARG GIT_DATE
+LABEL com.bearstech.date.solr=${GIT_DATE}
+
 CMD ["/bin/bash", "-c", "java -jar start.jar", "-Djetty.port=8983", "-Dsolr.solr.home=/opt/solr/solr", "-Dsolr.solr.data.dir=/var/lib/solr/data"]
