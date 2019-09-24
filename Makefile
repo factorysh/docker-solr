@@ -214,7 +214,7 @@ test4.9: bin/goss
 	make -C tests_solr tests SOLR_VERSION=4.9 BASE_URL=/solr/
 
 test5.5: bin/goss
-	make -C tests_solr tests SOLR_VERSION=5.5 BASE_URL=/solr/
+	make -C tests_solr tests SOLR_VERSION=5.5 BASE_URL=/solr/core1/
 
 test6.4: bin/goss
 	make -C tests_solr tests SOLR_VERSION=6.4 BASE_URL=/solr/core1/
