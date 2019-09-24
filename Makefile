@@ -7,6 +7,7 @@ SOLR_URL=http://archive.apache.org/dist/lucene/solr
 
 SOLR35_VERSION=3.5.0
 SOLR49_VERSION=4.9.1
+SOLR55_VERSION=5.5.5
 SOLR64_VERSION=6.4.2
 SOLR66_VERSION=6.6.5
 SOLR75_VERSION=7.5.0
@@ -15,7 +16,7 @@ JETTY8_VERSION=8.1.10
 
 all: pull build
 
-build: solr3 solr4 solr6 solr7
+build: solr3 solr4 solr5 solr6 solr7
 
 build/$(SOLR35_VERSION)/solr.tgz:
 	# fetch archive
@@ -49,6 +50,24 @@ build/$(SOLR49_VERSION)/solr: build/$(SOLR49_VERSION)/solr.tgz
 	#change rights
 	find build/$(SOLR49_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
 	find build/$(SOLR49_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
+
+build/$(SOLR55_VERSION)/solr.tgz:
+	# fetch archive
+	mkdir -p build/$(SOLR55_VERSION)
+	curl $(SOLR_URL)/$(SOLR55_VERSION)/solr-$(SOLR55_VERSION).tgz > build/$(SOLR55_VERSION)/solr.tgz
+build/$(SOLR55_VERSION)/solr: build/$(SOLR55_VERSION)/solr.tgz
+	mkdir -p build/$(SOLR55_VERSION)/solr
+	# extract contrib + dist (contains additionals solr libs)
+	tar --strip-components=1 -C build/$(SOLR55_VERSION)/solr \
+      -xzf build/$(SOLR55_VERSION)/solr.tgz solr-$(SOLR55_VERSION)/contrib solr-$(SOLR55_VERSION)/dist
+	# extract server
+	tar --strip-components=1 -C build/$(SOLR55_VERSION)/solr \
+      -xzf build/$(SOLR55_VERSION)/solr.tgz solr-$(SOLR55_VERSION)/server
+	# remove old logs
+	rm -rf build/$(SOLR55_VERSION)/solr/server/logs
+	#change rights
+	find build/$(SOLR55_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
+	find build/$(SOLR55_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
 
 build/$(SOLR64_VERSION)/solr.tgz:
 	# fetch archive
@@ -122,6 +141,15 @@ solr4: build/$(SOLR49_VERSION)/solr
 		.
 	docker tag bearstech/solr:4 bearstech/solr:4.9
 
+solr5: build/$(SOLR55_VERSION)/solr
+	docker build \
+		-t bearstech/solr:5 \
+		--build-arg GIT_VERSION=${GIT_VERSION} \
+		--build-arg GIT_DATE="${GIT_DATE}" \
+		-f Dockerfile.55 \
+		.
+	docker tag bearstech/solr:5 bearstech/solr:5.5
+
 solr6: build/$(SOLR64_VERSION)/solr build/$(SOLR66_VERSION)/solr
 	docker build \
 		-t bearstech/solr:6.4 \
@@ -184,6 +212,9 @@ test3.5: bin/goss
 
 test4.9: bin/goss
 	make -C tests_solr tests SOLR_VERSION=4.9 BASE_URL=/solr/
+
+test5.5: bin/goss
+	make -C tests_solr tests SOLR_VERSION=5.5 BASE_URL=/solr/
 
 test6.4: bin/goss
 	make -C tests_solr tests SOLR_VERSION=6.4 BASE_URL=/solr/core1/
