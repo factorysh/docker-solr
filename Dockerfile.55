@@ -42,10 +42,22 @@ EXPOSE 8983
 WORKDIR /opt/solr/server
 ENV SOLR_TIMEZONE="Europe/Paris"
 
-ARG GIT_VERSION
-LABEL com.bearstech.source.solr=https://github.com/factorysh/docker-solr/commit/${GIT_VERSION}
 
-ARG GIT_DATE
-LABEL com.bearstech.date.solr=${GIT_DATE}
 
 CMD ["/bin/bash", "-c", "java -server -Xms64m -Xmx512m -XX:NewRatio=3 -XX:SurvivorRatio=4 -XX:TargetSurvivorRatio=90 -XX:MaxTenuringThreshold=8 -XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:ConcGCThreads=4 -XX:ParallelGCThreads=4 -XX:+CMSScavengeBeforeRemark -XX:PretenureSizeThreshold=64m -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=50 -XX:CMSMaxAbortablePrecleanTime=6000 -XX:+CMSParallelRemarkEnabled -XX:+ParallelRefProcEnabled -XX:-OmitStackTraceInFastThrow -Djetty.port=8983 -Duser.timezone=$SOLR_TIMEZONE -Djetty.home=/opt/solr/server -Dsolr.data.dir=/var/lib/solr/data -Dsolr.install.dir=/opt/solr -Xss256k -jar start.jar --module=http"]
+
+# generated labels
+
+ARG GIT_VERSION
+ARG GIT_DATE
+ARG BUILD_DATE
+
+LABEL com.bearstech.image.revision_date=${GIT_DATE}
+
+LABEL org.opencontainers.image.authors=Bearstech
+
+LABEL org.opencontainers.image.revision=${GIT_VERSION}
+LABEL org.opencontainers.image.created=${BUILD_DATE}
+
+LABEL org.opencontainers.image.url=https://github.com/factorysh/docker-solr
+LABEL org.opencontainers.image.source=https://github.com/factorysh/docker-solr/blob/${GIT_VERSION}/Dockerfile.55

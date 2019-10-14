@@ -48,10 +48,22 @@ EXPOSE 8983
 WORKDIR /opt/solr
 ENV SOLR_TIMEZONE="Europe/Paris"
 
-ARG GIT_VERSION
-LABEL com.bearstech.source.solr=https://github.com/factorysh/docker-solr/commit/${GIT_VERSION}
 
-ARG GIT_DATE
-LABEL com.bearstech.date.solr=${GIT_DATE}
 
 CMD ["/bin/bash", "-c", "java -server -Xms64m -Xmx512m -Djetty.port=8983 -jar start.jar"]
+
+# generated labels
+
+ARG GIT_VERSION
+ARG GIT_DATE
+ARG BUILD_DATE
+
+LABEL com.bearstech.image.revision_date=${GIT_DATE}
+
+LABEL org.opencontainers.image.authors=Bearstech
+
+LABEL org.opencontainers.image.revision=${GIT_VERSION}
+LABEL org.opencontainers.image.created=${BUILD_DATE}
+
+LABEL org.opencontainers.image.url=https://github.com/factorysh/docker-solr
+LABEL org.opencontainers.image.source=https://github.com/factorysh/docker-solr/blob/${GIT_VERSION}/Dockerfile.49
