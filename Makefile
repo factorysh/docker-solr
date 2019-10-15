@@ -1,7 +1,8 @@
+
+include Makefile.build_args
+
 .PHONY: build
 GOSS_VERSION := 0.3.5
-GIT_VERSION := $(shell git rev-parse HEAD)
-GIT_DATE := $(shell git show -s --format=%ci HEAD)
 
 SOLR_URL=http://archive.apache.org/dist/lucene/solr
 
@@ -124,52 +125,46 @@ build/$(SOLR75_VERSION)/solr: build/$(SOLR75_VERSION)/solr.tgz
 	find build/$(SOLR75_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
 
 solr3: build/$(SOLR35_VERSION)/solr
-	docker build \
+	 docker build \
+		$(DOCKER_BUILD_ARGS) \
 		-t bearstech/solr:3 \
-		--build-arg GIT_VERSION=${GIT_VERSION} \
-		--build-arg GIT_DATE="${GIT_DATE}" \
 		-f Dockerfile.35 \
 		.
 	docker tag bearstech/solr:3 bearstech/solr:3.5
 
 solr4: build/$(SOLR49_VERSION)/solr
-	docker build \
+	 docker build \
+		$(DOCKER_BUILD_ARGS) \
 		-t bearstech/solr:4 \
-		--build-arg GIT_VERSION=${GIT_VERSION} \
-		--build-arg GIT_DATE="${GIT_DATE}" \
 		-f Dockerfile.49 \
 		.
 	docker tag bearstech/solr:4 bearstech/solr:4.9
 
 solr5: build/$(SOLR55_VERSION)/solr
-	docker build \
+	 docker build \
+		$(DOCKER_BUILD_ARGS) \
 		-t bearstech/solr:5 \
-		--build-arg GIT_VERSION=${GIT_VERSION} \
-		--build-arg GIT_DATE="${GIT_DATE}" \
 		-f Dockerfile.55 \
 		.
 	docker tag bearstech/solr:5 bearstech/solr:5.5
 
 solr6: build/$(SOLR64_VERSION)/solr build/$(SOLR66_VERSION)/solr
-	docker build \
+	 docker build \
+		$(DOCKER_BUILD_ARGS) \
 		-t bearstech/solr:6.4 \
-		--build-arg GIT_VERSION=${GIT_VERSION} \
-		--build-arg GIT_DATE="${GIT_DATE}" \
 		-f Dockerfile.64 \
 		.
-	docker build \
+	 docker build \
+		$(DOCKER_BUILD_ARGS) \
 		-t bearstech/solr:6\
-		--build-arg GIT_VERSION=${GIT_VERSION} \
-		--build-arg GIT_DATE="${GIT_DATE}" \
 		-f Dockerfile.66 \
 		.
 	docker tag bearstech/solr:6 bearstech/solr:6.6
 
 solr7: build/$(SOLR75_VERSION)/solr
-	docker build \
+	 docker build \
+		$(DOCKER_BUILD_ARGS) \
 		-t bearstech/solr:7 \
-		--build-arg GIT_VERSION=${GIT_VERSION} \
-		--build-arg GIT_DATE="${GIT_DATE}" \
 		-f Dockerfile.75 \
 		.
 	docker tag bearstech/solr:7 bearstech/solr:7.5
