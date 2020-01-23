@@ -1,5 +1,5 @@
-Solr images for docker
-=======================
+Solr images by Bearstech
+========================
 
 Les images sont fournies avec un seul core avec une configuration d'exemple fournie par défaut.
 
