@@ -1,32 +1,32 @@
 Solr images by Bearstech
 ========================
 
-Les images sont fournies avec un seul core avec une configuration d'exemple fournie par défaut.
+Images contains only one solr core with the default sample configuration provided with Solr release.
 
-- La configuration est dans /etc/solr/conf .
-- Les indexes et data sont stockés /var/lib/solr/data .
-- Utilisez un volume sur /var/lib/solr/data si vous souhaitez des données persistantes !
+- Configuration files are stored in /etc/solr/conf .
+- Indexes and data are stored in /var/lib/solr/data .
+- Use a docker volume on /var/lib/solr/data to ensure your datas are persistent !
 
-Quand vous remplacez les fichiers de configuration de Solr, assurez vous que votre fichier /etc/solr/conf/solrconfig.xml contient :
+When replacing Solr configuration files, ensure that your /etc/solr/conf/solrconfig.xml contains :
 ```
 <dataDir>${solr.data.dir:}</dataDir>
 ```
 
 
-Solr-Jetty http écoute sur le port 8983/tcp
+Solr embeded Jetty server listens on tcp port 8983
 
-L'url de sorl est :
-- /solr/ pour sorl 3.x et 4.x, exemple : http://solr:8983/solr/admin/ping
-- /solr/core1/ pour Sorl 6.x et solr 7.x, exemple : http://solr:8983/solr/core1/admin/ping
+Sorl uri is :
+- /solr/ for Sorl 3.x and 4.x, example : http://solr:8983/solr/admin/ping
+- /solr/core1/ for Sorl 5.x and abose, example : http://solr:8983/solr/core1/admin/ping
 
-Versions de Sorl disponibles : https://hub.docker.com/r/bearstech/solr/tags/
+Solr images are available at : https://hub.docker.com/r/bearstech/solr/tags/
 
-Utilisation
+Usage
 -----------
 
-Exemple de Dockerfile "factory" :
+Dockerfile sample for "factory" :
 ```
-# use bearstech solr (stretch)
+# use bearstech solr
 FROM bearstech/solr:3.5
 
 # add user solr 
@@ -49,7 +49,7 @@ USER solr
 #ENV SOLR_TIMEZONE="Europe/Paris"
 ```
 
-Exemple de docker-compose.yml "factory":
+docker-compose.yml sample for "factory":
 ```
     solr:
         image: $CI_REGISTRY_IMAGE/solr:latest
