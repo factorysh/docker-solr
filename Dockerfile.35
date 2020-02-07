@@ -1,5 +1,5 @@
 # use bearstech stretch
-FROM bearstech/java:8
+FROM bearstech/java:11
 
 ENV SOLR_VERSION=3.5.0
 ENV BUILD_DIR=build/$SOLR_VERSION/solr

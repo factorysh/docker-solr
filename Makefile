@@ -172,7 +172,7 @@ solr7: build/$(SOLR75_VERSION)/solr
 	docker tag bearstech/solr:7 bearstech/solr:latest
 
 pull:
-	docker pull bearstech/debian:stretch
+	docker pull bearstech/java:11
 
 push:
 	docker push bearstech/solr:3
@@ -224,7 +224,7 @@ test7.5: bin/goss
 down:
 	make -C tests_solr down
 
-tests: | test3.5 test4.9 test6.4 test6.6 test7.5
+tests: | test3.5 test4.9 test5.5 test6.4 test6.6 test7.5
 
 clean:
 	rm -rf build
