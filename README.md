@@ -1,30 +1,30 @@
 Solr images by Bearstech
 ========================
 
-Images contains only one solr core with the default sample configuration provided with Solr release.
+Images contain only one Solr core with the default sample configuration provided with Solr release.
 
-- Configuration files are stored in /etc/solr/conf .
-- Indexes and data are stored in /var/lib/solr/data .
-- Use a docker volume on /var/lib/solr/data to ensure your datas are persistent !
+- Configuration files are stored in /etc/solr/conf
+- Indexes and data are stored in /var/lib/solr/data
+- Use a docker volume on /var/lib/solr/data to ensure your data is persistent!
 
-When replacing Solr configuration files, ensure that your /etc/solr/conf/solrconfig.xml contains :
+When replacing Solr configuration files, make sure that your /etc/solr/conf/solrconfig.xml contains:
 ```
 <dataDir>${solr.data.dir:}</dataDir>
 ```
 
 
-Solr embeded Jetty server listens on tcp port 8983
+Solr embedded Jetty server listens on TCP port 8983.
 
-Sorl uri is :
-- /solr/ for Sorl 3.x and 4.x, example : http://solr:8983/solr/admin/ping
-- /solr/core1/ for Sorl 5.x and above, example : http://solr:8983/solr/core1/admin/ping
+Solr URI is :
+- /solr/ for Solr 3.x and 4.x, eg.: http://solr:8983/solr/admin/ping
+- /solr/core1/ for Solr 5.x and above, eg.: http://solr:8983/solr/core1/admin/ping
 
-Solr images are available at : https://hub.docker.com/r/bearstech/solr/tags/
+Solr images are available at: https://hub.docker.com/r/bearstech/solr/tags/
 
 Usage
 -----------
 
-Dockerfile sample for "factory" :
+Dockerfile sample for "factory":
 ```
 # use bearstech solr
 FROM bearstech/solr:3.5
