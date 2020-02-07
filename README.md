@@ -39,9 +39,9 @@ RUN rm -rf /etc/solr/conf/*
 COPY /conf/solr /etc/solr/conf
 
 # Adjust owner
-RUN chown ${uid}.${uid} /opt/solr -R
-RUN chown ${uid}.${uid} /var/lib/solr -R
-RUN chown ${uid}.${uid} /etc/solr -R
+RUN chown ${uid}.${uid} /opt/solr
+RUN chown ${uid}.${uid} /var/lib/solr
+RUN chown ${uid}.${uid} /etc/solr
 
 USER solr
 
