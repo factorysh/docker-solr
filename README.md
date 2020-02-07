@@ -1,6 +1,20 @@
 Solr images by Bearstech
 ========================
 
+Available image:
+
+[bearstech/solr](https://hub.docker.com/r/bearstech/solr/)
+
+Many solr versions are availables from 3.x to 5.x+. Check available [tags](https://hub.docker.com/r/bearstech/solr/tags)
+
+Dockerfiles
+-----------
+
+Dockerfiles are available at https://github.com/factorysh/docker-solr
+
+Usage
+-----------
+
 Images contain only one Solr core with the default sample configuration provided with Solr release.
 
 - Configuration files are stored in /etc/solr/conf
@@ -19,9 +33,7 @@ Solr URI is :
 - /solr/ for Solr 3.x and 4.x, eg.: http://solr:8983/solr/admin/ping
 - /solr/core1/ for Solr 5.x and above, eg.: http://solr:8983/solr/core1/admin/ping
 
-Solr images are available at: https://hub.docker.com/r/bearstech/solr/tags/
-
-Usage
+Example
 -----------
 
 Dockerfile sample for "factory":
@@ -29,7 +41,7 @@ Dockerfile sample for "factory":
 # use bearstech solr
 FROM bearstech/solr:3.5
 
-# add user solr 
+# add user solr
 ARG uid=1001
 RUN useradd solr -d /opt/solr --uid ${uid} --shell /bin/bash
 
@@ -66,7 +78,7 @@ docker-compose.yml sample for "factory":
             X_SOLR_PORT: ${X_SOLR_PORT:-8983}
             X_SORL_URL:  ${X_SOLR_URL:-/solr}
             # url is solr/core1 when using Sorl 6.x and 7.x
-            #X_SORL_URL:  ${X_SOLR_URL:-/solr/core1} 
+            #X_SORL_URL:  ${X_SOLR_URL:-/solr/core1}
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_HOST: ${MYSQL_HOST:-mysql}
             MYSQL_USER: ${MYSQL_USER}
