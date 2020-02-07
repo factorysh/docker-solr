@@ -17,7 +17,7 @@ Solr embeded Jetty server listens on tcp port 8983
 
 Sorl uri is :
 - /solr/ for Sorl 3.x and 4.x, example : http://solr:8983/solr/admin/ping
-- /solr/core1/ for Sorl 5.x and abose, example : http://solr:8983/solr/core1/admin/ping
+- /solr/core1/ for Sorl 5.x and above, example : http://solr:8983/solr/core1/admin/ping
 
 Solr images are available at : https://hub.docker.com/r/bearstech/solr/tags/
 
