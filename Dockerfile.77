@@ -1,7 +1,7 @@
 # use bearstech stretch
 FROM bearstech/java:11
 
-ENV SOLR_VERSION=7.5.0
+ENV SOLR_VERSION=7.7.3
 
 ENV BUILD_DIR=build/$SOLR_VERSION/solr
 
@@ -48,4 +48,4 @@ LABEL \
     org.opencontainers.image.revision=${GIT_VERSION} \
     org.opencontainers.image.created=${BUILD_DATE} \
     org.opencontainers.image.url=https://github.com/factorysh/docker-solr \
-    org.opencontainers.image.source=https://github.com/factorysh/docker-solr/blob/${GIT_VERSION}/Dockerfile.75
+    org.opencontainers.image.source=https://github.com/factorysh/docker-solr/blob/${GIT_VERSION}/Dockerfile.77

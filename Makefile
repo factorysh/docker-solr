@@ -12,7 +12,7 @@ SOLR49_VERSION=4.9.1
 SOLR55_VERSION=5.5.5
 SOLR64_VERSION=6.4.2
 SOLR66_VERSION=6.6.5
-SOLR75_VERSION=7.5.0
+SOLR77_VERSION=7.7.3
 
 JETTY8_VERSION=8.1.10
 
@@ -107,23 +107,23 @@ build/$(SOLR66_VERSION)/solr: build/$(SOLR66_VERSION)/solr.tgz
 	find build/$(SOLR66_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
 	find build/$(SOLR66_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
 
-build/$(SOLR75_VERSION)/solr.tgz:
+build/$(SOLR77_VERSION)/solr.tgz:
 	# fetch archive
-	mkdir -p build/$(SOLR75_VERSION)
-	curl $(SOLR_URL)/$(SOLR75_VERSION)/solr-$(SOLR75_VERSION).tgz > build/$(SOLR75_VERSION)/solr.tgz
-build/$(SOLR75_VERSION)/solr: build/$(SOLR75_VERSION)/solr.tgz
-	mkdir -p build/$(SOLR75_VERSION)/solr
+	mkdir -p build/$(SOLR77_VERSION)
+	curl $(SOLR_URL)/$(SOLR77_VERSION)/solr-$(SOLR77_VERSION).tgz > build/$(SOLR77_VERSION)/solr.tgz
+build/$(SOLR77_VERSION)/solr: build/$(SOLR77_VERSION)/solr.tgz
+	mkdir -p build/$(SOLR77_VERSION)/solr
 	# extract contrib + dist (contains additionals solr libs)
-	tar --strip-components=1 -C build/$(SOLR75_VERSION)/solr \
-      -xzf build/$(SOLR75_VERSION)/solr.tgz solr-$(SOLR75_VERSION)/contrib solr-$(SOLR75_VERSION)/dist
+	tar --strip-components=1 -C build/$(SOLR77_VERSION)/solr \
+      -xzf build/$(SOLR77_VERSION)/solr.tgz solr-$(SOLR77_VERSION)/contrib solr-$(SOLR77_VERSION)/dist
 	# extract server
-	tar --strip-components=1 -C build/$(SOLR75_VERSION)/solr \
-      -xzf build/$(SOLR75_VERSION)/solr.tgz solr-$(SOLR75_VERSION)/server
+	tar --strip-components=1 -C build/$(SOLR77_VERSION)/solr \
+      -xzf build/$(SOLR77_VERSION)/solr.tgz solr-$(SOLR77_VERSION)/server
 	# remove old logs
-	rm -rf build/$(SOLR75_VERSION)/solr/server/logs
+	rm -rf build/$(SOLR77_VERSION)/solr/server/logs
 	#change rights
-	find build/$(SOLR75_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
-	find build/$(SOLR75_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
+	find build/$(SOLR77_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
+	find build/$(SOLR77_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
 
 solr3: build/$(SOLR35_VERSION)/solr
 	 docker build \
@@ -162,13 +162,13 @@ solr6: build/$(SOLR64_VERSION)/solr build/$(SOLR66_VERSION)/solr
 		.
 	docker tag bearstech/solr:6 bearstech/solr:6.6
 
-solr7: build/$(SOLR75_VERSION)/solr
+solr7: build/$(SOLR77_VERSION)/solr
 	 docker build \
 		$(DOCKER_BUILD_ARGS) \
 		-t bearstech/solr:7 \
-		-f Dockerfile.75 \
+		-f Dockerfile.77 \
 		.
-	docker tag bearstech/solr:7 bearstech/solr:7.5
+	docker tag bearstech/solr:7 bearstech/solr:7.7
 	docker tag bearstech/solr:7 bearstech/solr:latest
 
 pull:
@@ -183,7 +183,7 @@ push:
 	docker push bearstech/solr:6.6
 	docker push bearstech/solr:6.4
 	docker push bearstech/solr:7
-	docker push bearstech/solr:7.5
+	docker push bearstech/solr:7.7
 	docker push bearstech/solr:latest
 
 remove_image:
@@ -195,7 +195,7 @@ remove_image:
 	docker rmi bearstech/solr:6.6
 	docker rmi bearstech/solr:6.4
 	docker rmi bearstech/solr:7
-	docker rmi bearstech/solr:7.5
+	docker rmi bearstech/solr:7.7
 	docker rmi bearstech/solr:latest
 
 bin/goss:
@@ -218,13 +218,13 @@ test6.4: bin/goss
 test6.6: bin/goss
 	make -C tests_solr tests SOLR_VERSION=6.6 BASE_URL=/solr/core1/
 
-test7.5: bin/goss
-	make -C tests_solr tests SOLR_VERSION=7.5 BASE_URL=/solr/core1/
+test7.7: bin/goss
+	make -C tests_solr tests SOLR_VERSION=7.7 BASE_URL=/solr/core1/
 
 down:
 	make -C tests_solr down
 
-tests: | test3.5 test4.9 test5.5 test6.4 test6.6 test7.5
+tests: | test3.5 test4.9 test5.5 test6.4 test6.6 test7.7
 
 clean:
 	rm -rf build
