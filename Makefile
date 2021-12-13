@@ -7,11 +7,11 @@ GOSS_VERSION := 0.3.5
 
 SOLR_URL=http://archive.apache.org/dist/lucene/solr
 
-SOLR35_VERSION=3.5.0
+SOLR36_VERSION=3.6.2
 SOLR49_VERSION=4.9.1
 SOLR55_VERSION=5.5.5
 SOLR64_VERSION=6.4.2
-SOLR66_VERSION=6.6.5
+SOLR66_VERSION=6.6.6
 SOLR77_VERSION=7.7.3
 
 JETTY8_VERSION=8.1.10
@@ -20,22 +20,22 @@ all: pull build
 
 build: solr3 solr4 solr5 solr6 solr7
 
-build/$(SOLR35_VERSION)/solr.tgz:
+build/$(SOLR36_VERSION)/solr.tgz:
 	# fetch archive
-	mkdir -p build/$(SOLR35_VERSION)
-	curl $(SOLR_URL)/$(SOLR35_VERSION)/apache-solr-$(SOLR35_VERSION).tgz > build/$(SOLR35_VERSION)/solr.tgz
-build/$(SOLR35_VERSION)/solr: build/$(SOLR35_VERSION)/solr.tgz
-	mkdir -p build/$(SOLR35_VERSION)/solr
+	mkdir -p build/$(SOLR36_VERSION)
+	curl $(SOLR_URL)/$(SOLR36_VERSION)/apache-solr-$(SOLR36_VERSION).tgz > build/$(SOLR36_VERSION)/solr.tgz
+build/$(SOLR36_VERSION)/solr: build/$(SOLR36_VERSION)/solr.tgz
+	mkdir -p build/$(SOLR36_VERSION)/solr
 	#only extract example (contains solr + jetty)
-	tar --strip-components=2 -C build/$(SOLR35_VERSION)/solr \
-      -xzf build/$(SOLR35_VERSION)/solr.tgz apache-solr-$(SOLR35_VERSION)/example
+	tar --strip-components=2 -C build/$(SOLR36_VERSION)/solr \
+      -xzf build/$(SOLR36_VERSION)/solr.tgz apache-solr-$(SOLR36_VERSION)/example
 	# only extract contrib + dist (contains additionals solr libs)
-	tar --strip-components=1 -C build/$(SOLR35_VERSION)/solr \
-    -xzf build/$(SOLR35_VERSION)/solr.tgz apache-solr-$(SOLR35_VERSION)/contrib apache-solr-$(SOLR35_VERSION)/dist
-	sed -e 's/solr\.velocity\.enabled:true/solr.velocity.enabled:false/' -i build/$(SOLR35_VERSION)/solr/solr/conf/solrconfig.xml
+	tar --strip-components=1 -C build/$(SOLR36_VERSION)/solr \
+    -xzf build/$(SOLR36_VERSION)/solr.tgz apache-solr-$(SOLR36_VERSION)/contrib apache-solr-$(SOLR36_VERSION)/dist
+	sed -e 's/solr\.velocity\.enabled:true/solr.velocity.enabled:false/' -i build/$(SOLR36_VERSION)/solr/solr/conf/solrconfig.xml
 	#change rights
-	find build/$(SOLR35_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
-	find build/$(SOLR35_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
+	find build/$(SOLR36_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
+	find build/$(SOLR36_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
 
 build/$(SOLR49_VERSION)/solr.tgz:
 	# fetch archive
@@ -125,13 +125,13 @@ build/$(SOLR77_VERSION)/solr: build/$(SOLR77_VERSION)/solr.tgz
 	find build/$(SOLR77_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
 	find build/$(SOLR77_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
 
-solr3: build/$(SOLR35_VERSION)/solr
+solr3: build/$(SOLR36_VERSION)/solr
 	 docker build \
 		$(DOCKER_BUILD_ARGS) \
 		-t bearstech/solr:3 \
-		-f Dockerfile.35 \
+		-f Dockerfile.36 \
 		.
-	docker tag bearstech/solr:3 bearstech/solr:3.5
+	docker tag bearstech/solr:3 bearstech/solr:3.6
 
 solr4: build/$(SOLR49_VERSION)/solr
 	 docker build \
