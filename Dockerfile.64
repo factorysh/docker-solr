@@ -1,4 +1,4 @@
-# use bearstech stretch
+# use bearstech bullseye
 FROM bearstech/java:11
 
 ENV SOLR_VERSION=6.4.2
