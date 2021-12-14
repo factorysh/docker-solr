@@ -10,6 +10,7 @@ SOLR_URL=http://archive.apache.org/dist/lucene/solr
 SOLR36_VERSION=3.6.2
 SOLR49_VERSION=4.9.1
 SOLR55_VERSION=5.5.5
+SOLR64_VERSION=6.4.2
 SOLR66_VERSION=6.6.6
 SOLR77_VERSION=7.7.3
 
@@ -168,8 +169,13 @@ solr5: build/$(SOLR55_VERSION)/solr
 		.
 	docker tag bearstech/solr:5 bearstech/solr:5.5
 
-solr6: build/$(SOLR66_VERSION)/solr
-	 docker build \
+solr6: build/$(SOLR64_VERSION)/solr build/$(SOLR66_VERSION)/solr
+	docker build \
+    $(DOCKER_BUILD_ARGS) \
+    -t bearstech/solr:6.4\
+    -f Dockerfile.64 \
+    .
+	docker build \
 		$(DOCKER_BUILD_ARGS) \
 		-t bearstech/solr:6\
 		-f Dockerfile.66 \
@@ -194,6 +200,7 @@ push:
 	docker push bearstech/solr:4
 	docker push bearstech/solr:4.9
 	docker push bearstech/solr:6
+	docker push bearstech/solr:6.4
 	docker push bearstech/solr:6.6
 	docker push bearstech/solr:7
 	docker push bearstech/solr:7.7
@@ -205,6 +212,7 @@ remove_image:
 	docker rmi bearstech/solr:4
 	docker rmi bearstech/solr:4.9
 	docker rmi bearstech/solr:6
+	docker rmi bearstech/solr:6.4
 	docker rmi bearstech/solr:6.6
 	docker rmi bearstech/solr:7
 	docker rmi bearstech/solr:7.7
@@ -224,6 +232,9 @@ test4.9: bin/goss
 test5.5: bin/goss
 	make -C tests_solr tests SOLR_VERSION=5.5 BASE_URL=/solr/core1/
 
+test6.4: bin/goss
+	make -C tests_solr tests SOLR_VERSION=6.4 BASE_URL=/solr/core1/
+
 test6.6: bin/goss
 	make -C tests_solr tests SOLR_VERSION=6.6 BASE_URL=/solr/core1/
 
@@ -233,7 +244,7 @@ test7.7: bin/goss
 down:
 	make -C tests_solr down
 
-tests: | test3.6 test4.9 test5.5 test6.6 test7.7
+tests: | test3.6 test4.9 test5.5 test6.4 test6.6 test7.7
 
 clean:
 	rm -rf build

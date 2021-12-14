@@ -1,0 +1,51 @@
+# use bearstech bullseye
+FROM bearstech/java:11
+
+ENV SOLR_VERSION=6.4.2
+
+ENV BUILD_DIR=build/$SOLR_VERSION/solr
+
+# we need openjdk
+RUN set -eux \
+    # solr installation dir
+    &&  mkdir -p /opt/solr \
+    # config dir /etc/solr/conf
+    &&  mkdir -p /etc/solr/conf \
+    &&  chmod 0777 /etc/solr -R \
+    # data dir /var/lib/solr/data
+    &&  mkdir -p /var/lib/solr/data/ \
+    &&  chmod 0777 /var/lib/solr -R
+
+# install to /opt/solr
+COPY $BUILD_DIR /opt/solr/
+RUN mkdir /opt/solr/server/solr/core1
+RUN chmod 0777 /opt/solr/server/solr/core1
+RUN cp -r /opt/solr/server/solr/configsets/data_driven_schema_configs/conf/* /etc/solr/conf
+RUN  echo "name=core1" > /opt/solr/server/solr/core1/core.properties
+RUN ln -s /etc/solr/conf /opt/solr/server/solr/core1/conf
+
+# configure log4j to log only on console
+COPY log4j.properties.solr /opt/solr/server/resources/log4j.properties
+
+# Run Apache Solr
+EXPOSE 8983
+WORKDIR /opt/solr/server
+ENV SOLR_TIMEZONE="Europe/Paris"
+
+
+
+CMD ["/bin/bash", "-c", "java -server -Xms64m -Xmx512m -XX:NewRatio=3 -XX:SurvivorRatio=4 -XX:TargetSurvivorRatio=90 -XX:MaxTenuringThreshold=8 -XX:+UseG1GC -XX:ConcGCThreads=4 -XX:ParallelGCThreads=4 -XX:+CMSScavengeBeforeRemark -XX:PretenureSizeThreshold=64m -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=50 -XX:CMSMaxAbortablePrecleanTime=6000 -XX:+CMSParallelRemarkEnabled -XX:+ParallelRefProcEnabled -XX:-OmitStackTraceInFastThrow -Djetty.port=8983 -Duser.timezone=$SOLR_TIMEZONE -Djetty.home=/opt/solr/server -Dsolr.data.dir=/var/lib/solr/data -Dsolr.install.dir=/opt/solr -Xss256k -jar start.jar --module=http"]
+
+# generated labels
+
+ARG GIT_VERSION
+ARG GIT_DATE
+ARG BUILD_DATE
+
+LABEL \
+    com.bearstech.image.revision_date=${GIT_DATE} \
+    org.opencontainers.image.authors=Bearstech \
+    org.opencontainers.image.revision=${GIT_VERSION} \
+    org.opencontainers.image.created=${BUILD_DATE} \
+    org.opencontainers.image.url=https://github.com/factorysh/docker-solr \
+    org.opencontainers.image.source=https://github.com/factorysh/docker-solr/blob/${GIT_VERSION}/Dockerfile.66
