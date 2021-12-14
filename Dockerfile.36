@@ -1,4 +1,4 @@
-# use bearstech bullseye
+# use bearstech java
 FROM bearstech/java:11
 
 ENV SOLR_VERSION=3.6.2
