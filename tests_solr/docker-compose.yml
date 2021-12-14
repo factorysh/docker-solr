@@ -19,7 +19,7 @@ services:
         environment:
             BASE_URL: ${BASE_URL:-/solr/core1/}
             SOLR_VERSION: ${SOLR_VERSION}
-        image: bearstech/debian:stretch
+        image: bearstech/debian:bullseye
         command: >
             goss -g solr.yaml validate
                 --retry-timeout 30s

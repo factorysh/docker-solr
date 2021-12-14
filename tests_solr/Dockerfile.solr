@@ -1,6 +1,6 @@
 ARG solr_version=latest
 
-# use bearstech solr (stretch)
+# use bearstech solr
 FROM bearstech/solr:${solr_version}
 
 # add user solr
