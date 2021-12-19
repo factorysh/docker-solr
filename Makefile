@@ -20,7 +20,7 @@ JETTY8_VERSION=8.1.10
 
 all: pull build
 
-build: solr3 solr4 solr5 solr6 solr7
+build: clean solr3 solr4 solr5 solr6 solr7
  
 build/$(SOLR36_VERSION)/solr.tgz:
 	# fetch archive
