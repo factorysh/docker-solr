@@ -13,6 +13,7 @@ SOLR55_VERSION=5.5.5
 SOLR64_VERSION=6.4.2
 SOLR66_VERSION=6.6.6
 SOLR77_VERSION=7.7.3
+SOLR8_VERSION=8.11.1
 
 LOG4J_VERSION=2.17.0
 
@@ -20,7 +21,7 @@ JETTY8_VERSION=8.1.10
 
 all: pull build
 
-build: clean solr3 solr4 solr5 solr6 solr7
+build: clean solr3 solr4 solr5 solr6 solr7 solr8
  
 build/$(SOLR36_VERSION)/solr.tgz:
 	# fetch archive
@@ -145,6 +146,42 @@ build/$(SOLR77_VERSION)/solr: build/$(SOLR77_VERSION)/solr.tgz
 	find build/$(SOLR77_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
 	find build/$(SOLR77_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
 
+build/$(SOLR8_VERSION)/solr.tgz:
+	# fetch archive
+	mkdir -p build/$(SOLR8_VERSION)
+	curl $(SOLR_URL)/$(SOLR8_VERSION)/solr-$(SOLR8_VERSION).tgz > build/$(SOLR8_VERSION)/solr.tgz
+build/$(SOLR8_VERSION)/solr: build/$(SOLR8_VERSION)/solr.tgz
+	# extract contrib + dist (contains additionals solr libs)
+	mkdir -p build/$(SOLR8_VERSION)/solr
+	tar --strip-components=1 -C build/$(SOLR8_VERSION)/solr \
+      -xzf build/$(SOLR8_VERSION)/solr.tgz solr-$(SOLR8_VERSION)/contrib solr-$(SOLR8_VERSION)/dist
+	# extract server
+	tar --strip-components=1 -C build/$(SOLR8_VERSION)/solr \
+      -xzf build/$(SOLR8_VERSION)/solr.tgz solr-$(SOLR8_VERSION)/server
+	# fetch log4j
+	mkdir -p build/log4j$(LOG4J_VERSION)
+	curl https://downloads.apache.org/logging/log4j/$(LOG4J_VERSION)/apache-log4j-$(LOG4J_VERSION)-bin.tar.gz > build/log4j$(LOG4J_VERSION)/log4j.tgz
+	# extract log4j
+	mkdir -p build/log4j$(LOG4J_VERSION)/log4j
+	tar --strip-components=1 -C build/log4j$(LOG4J_VERSION)/log4j \
+    -xzf build/log4j$(LOG4J_VERSION)/log4j.tgz
+	# replace log4j
+	rm -f build/$(SOLR8_VERSION)/solr/server/lib/ext/log4j*.jar
+	rm -f build/$(SOLR8_VERSION)/solr/contrib/prometheus-exporter/lib/log4j*.jar
+	cp build/log4j$(LOG4J_VERSION)/log4j/log4j-slf4j-impl-$(LOG4J_VERSION).jar build/$(SOLR8_VERSION)/solr/server/lib/ext/
+	cp build/log4j$(LOG4J_VERSION)/log4j/log4j-core-$(LOG4J_VERSION).jar       build/$(SOLR8_VERSION)/solr/server/lib/ext/
+	cp build/log4j$(LOG4J_VERSION)/log4j/log4j-1.2-api-$(LOG4J_VERSION).jar    build/$(SOLR8_VERSION)/solr/server/lib/ext/
+	cp build/log4j$(LOG4J_VERSION)/log4j/log4j-api-$(LOG4J_VERSION).jar        build/$(SOLR8_VERSION)/solr/server/lib/ext/
+	cp build/log4j$(LOG4J_VERSION)/log4j/log4j-slf4j-impl-$(LOG4J_VERSION).jar build/$(SOLR8_VERSION)/solr/contrib/prometheus-exporter/lib/
+	cp build/log4j$(LOG4J_VERSION)/log4j/log4j-core-$(LOG4J_VERSION).jar       build/$(SOLR8_VERSION)/solr/contrib/prometheus-exporter/lib/
+	cp build/log4j$(LOG4J_VERSION)/log4j/log4j-api-$(LOG4J_VERSION).jar        build/$(SOLR8_VERSION)/solr/contrib/prometheus-exporter/lib/
+
+	# remove old logs
+	rm -rf build/$(SOLR8_VERSION)/solr/server/logs
+	#change rights
+	find build/$(SOLR8_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
+	find build/$(SOLR8_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
+
 solr3: build/$(SOLR36_VERSION)/solr
 	 docker build \
 		$(DOCKER_BUILD_ARGS) \
@@ -189,7 +226,15 @@ solr7: build/$(SOLR77_VERSION)/solr
 		-f Dockerfile.77 \
 		.
 	docker tag bearstech/solr:7 bearstech/solr:7.7
-	docker tag bearstech/solr:7 bearstech/solr:latest
+
+solr8: build/$(SOLR8_VERSION)/solr
+	 docker build \
+		$(DOCKER_BUILD_ARGS) \
+		-t bearstech/solr:8 \
+		-f Dockerfile.8 \
+		.
+	docker tag bearstech/solr:8 bearstech/solr:8
+
 
 pull:
 	docker pull bearstech/java:11
@@ -204,7 +249,7 @@ push:
 	docker push bearstech/solr:6.6
 	docker push bearstech/solr:7
 	docker push bearstech/solr:7.7
-	docker push bearstech/solr:latest
+	docker push bearstech/solr:8
 
 remove_image:
 	docker rmi bearstech/solr:3
@@ -216,7 +261,7 @@ remove_image:
 	docker rmi bearstech/solr:6.6
 	docker rmi bearstech/solr:7
 	docker rmi bearstech/solr:7.7
-	docker rmi bearstech/solr:latest
+	docker rmi bearstech/solr:8
 
 bin/goss:
 	mkdir -p bin
@@ -224,27 +269,30 @@ bin/goss:
 	chmod +x bin/goss
 
 test3.6: bin/goss
-	make -C tests_solr tests SOLR_VERSION=3.6 BASE_URL=/solr/
+	make -C tests_solr tests SOLR_VERSION=3.6 SOLR_FULL_VERSION=${SOLR36_VERSION} BASE_URL=/solr/
 
 test4.9: bin/goss
-	make -C tests_solr tests SOLR_VERSION=4.9 BASE_URL=/solr/
+	make -C tests_solr tests SOLR_VERSION=4.9 SOLR_FULL_VERSION=${SOLR49_VERSION} BASE_URL=/solr/
 
 test5.5: bin/goss
-	make -C tests_solr tests SOLR_VERSION=5.5 BASE_URL=/solr/core1/
+	make -C tests_solr tests SOLR_VERSION=5.5 SOLR_FULL_VERSION=${SOLR55_VERSION} BASE_URL=/solr/core1/
 
 test6.4: bin/goss
-	make -C tests_solr tests SOLR_VERSION=6.4 BASE_URL=/solr/core1/
+	make -C tests_solr tests SOLR_VERSION=6.4 SOLR_FULL_VERSION=${SOLR64_VERSION} BASE_URL=/solr/core1/
 
 test6.6: bin/goss
-	make -C tests_solr tests SOLR_VERSION=6.6 BASE_URL=/solr/core1/
+	make -C tests_solr tests SOLR_VERSION=6.6 SOLR_FULL_VERSION=${SOLR66_VERSION} BASE_URL=/solr/core1/
 
 test7.7: bin/goss
-	make -C tests_solr tests SOLR_VERSION=7.7 BASE_URL=/solr/core1/
+	make -C tests_solr tests SOLR_VERSION=7.7 SOLR_FULL_VERSION=${SOLR77_VERSION} BASE_URL=/solr/core1/
+
+test8: bin/goss
+	make -C tests_solr tests SOLR_VERSION=8 SOLR_FULL_VERSION=${SOLR8_VERSION} BASE_URL=/solr/core1/
 
 down:
 	make -C tests_solr down
 
-tests: | test3.6 test4.9 test5.5 test6.4 test6.6 test7.7
+tests: | test3.6 test4.9 test5.5 test6.4 test6.6 test7.7 test8
 
 clean:
 	find build/ -maxdepth 2 -type d -name solr -exec rm -rf {} \;

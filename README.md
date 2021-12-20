@@ -5,7 +5,7 @@ Available image:
 
 [bearstech/solr](https://hub.docker.com/r/bearstech/solr/)
 
-Many solr versions are availables from 3.x to 5.x+. Check available [tags](https://hub.docker.com/r/bearstech/solr/tags)
+Many solr versions are availables from 3.x to 8.x+. Check available [tags](https://hub.docker.com/r/bearstech/solr/tags)
 
 Dockerfiles
 -----------
@@ -33,13 +33,17 @@ Solr URI is :
 - /solr/ for Solr 3.x and 4.x, eg.: http://solr:8983/solr/admin/ping
 - /solr/core1/ for Solr 5.x and above, eg.: http://solr:8983/solr/core1/admin/ping
 
+You can ajust SOLR_JAVA_MEM to suits your needs (Solr >= 7)
+
+Solr versions < 7 are no longer maintained.
+
 Example
 -----------
 
 Dockerfile sample for "factory":
 ```
 # use bearstech solr
-FROM bearstech/solr:3.5
+FROM bearstech/solr:8
 
 # add user solr
 ARG uid=1001
@@ -59,12 +63,13 @@ USER solr
 
 # Default timezone used by solr
 #ENV SOLR_TIMEZONE="Europe/Paris"
+#ENV SOLR_JAVA_MEM="-Xms512m -Xmx512m"
 ```
 
 docker-compose.yml sample for "factory":
 ```
     solr:
-        image: $CI_REGISTRY_IMAGE/solr:latest
+        image: $CI_REGISTRY_IMAGE/solr:8
         volumes:
             - ./data/scraping_solr_data:/var/lib/solr/data
         expose:
@@ -77,7 +82,7 @@ docker-compose.yml sample for "factory":
             X_SOLR_HOST: ${X_SOLR_HOST:-solr}
             X_SOLR_PORT: ${X_SOLR_PORT:-8983}
             X_SORL_URL:  ${X_SOLR_URL:-/solr}
-            # url is solr/core1 when using Sorl 6.x and 7.x
+            # url is solr/core1
             #X_SORL_URL:  ${X_SOLR_URL:-/solr/core1}
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_HOST: ${MYSQL_HOST:-mysql}

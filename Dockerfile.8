@@ -1,7 +1,7 @@
 # use bearstech java
 FROM bearstech/java:11
 
-ENV SOLR_VERSION=7.7.3
+ENV SOLR_VERSION=8.11.1
 
 ENV BUILD_DIR=build/$SOLR_VERSION/solr
 
@@ -33,8 +33,7 @@ WORKDIR /opt/solr/server
 ENV SOLR_TIMEZONE="Europe/Paris"
 ENV SOLR_JAVA_MEM="-Xms512m -Xmx512m"
 
-
-CMD ["/bin/bash", "-c", "java -server $SOLR_JAVA_MEM -XX:NewRatio=3 -XX:SurvivorRatio=4 -XX:TargetSurvivorRatio=90 -XX:MaxTenuringThreshold=8 -XX:+UseG1GC -XX:ConcGCThreads=4 -XX:ParallelGCThreads=4 -XX:+CMSScavengeBeforeRemark -XX:PretenureSizeThreshold=64m -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=50 -XX:CMSMaxAbortablePrecleanTime=6000 -XX:+CMSParallelRemarkEnabled -XX:+ParallelRefProcEnabled -XX:-OmitStackTraceInFastThrow -Djetty.port=8983 -Duser.timezone=$SOLR_TIMEZONE -Dlog4j2.formatMsgNoLookups=true -Djetty.home=/opt/solr/server -Dsolr.data.dir=/var/lib/solr/data -Dsolr.install.dir=/opt/solr -Xss256k -jar start.jar --module=http"]
+CMD ["/bin/bash", "-c", "java -server $SOLR_JAVA_MEM -XX:+UseG1GC -XX:+PerfDisableSharedMem -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=250 -XX:+AlwaysPreTouch -XX:+ExplicitGCInvokesConcurrent -Djetty.port=8983 -Duser.timezone=$SOLR_TIMEZONE -XX:-OmitStackTraceInFastThrow -Djetty.home=/opt/solr/server -Dsolr.data.dir=/var/lib/solr/data -Dsolr.install.dir=/opt/solr -Dlog4j2.formatMsgNoLookups=true -Xss256k -jar start.jar --module=http --module=gzip"]
 
 # generated labels
 
@@ -48,4 +47,4 @@ LABEL \
     org.opencontainers.image.revision=${GIT_VERSION} \
     org.opencontainers.image.created=${BUILD_DATE} \
     org.opencontainers.image.url=https://github.com/factorysh/docker-solr \
-    org.opencontainers.image.source=https://github.com/factorysh/docker-solr/blob/${GIT_VERSION}/Dockerfile.77
+    org.opencontainers.image.source=https://github.com/factorysh/docker-solr/blob/${GIT_VERSION}/Dockerfile.8

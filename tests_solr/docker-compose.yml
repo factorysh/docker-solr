@@ -8,6 +8,7 @@ services:
             context: .
             args:
                 solr_version: ${SOLR_VERSION:-latest}
+                solr_full_version: ${SOLR_FULL_VERSION}
                 uid: ${UID:-1001}
             dockerfile: Dockerfile.solr
         ports:
@@ -19,6 +20,7 @@ services:
         environment:
             BASE_URL: ${BASE_URL:-/solr/core1/}
             SOLR_VERSION: ${SOLR_VERSION}
+            SOLR_FULL_VERSION: ${SOLR_FULL_VERSION}
         image: bearstech/debian:bullseye
         command: >
             goss -g solr.yaml validate

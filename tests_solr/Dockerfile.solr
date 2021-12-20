@@ -1,4 +1,5 @@
 ARG solr_version=latest
+ARG solr_full_version=latest
 
 # use bearstech solr
 FROM bearstech/solr:${solr_version}

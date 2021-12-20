@@ -10,4 +10,4 @@ http:
             # check where indexes are stored
             - /"index":"\/var\/lib\/solr\/data\/index"/
             # check if version matches
-            - /"solr-impl-version":"{{.Env.SOLR_VERSION}}/
+            - /"solr-impl-version":"{{.Env.SOLR_FULL_VERSION}}/
