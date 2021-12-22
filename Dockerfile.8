@@ -26,6 +26,7 @@ RUN ln -s /etc/solr/conf /opt/solr/server/solr/core1/conf
 
 # configure log4j to log only on console
 COPY log4j.properties.solr /opt/solr/server/resources/log4j.properties
+COPY log4j2.xml /opt/solr/server/resources/log4j2.xml
 
 # Run Apache Solr
 EXPOSE 8983
