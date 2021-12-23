@@ -35,7 +35,7 @@ WORKDIR /opt/solr/server
 ENV SOLR_TIMEZONE="Europe/Paris"
 ENV SOLR_JAVA_MEM="-Xms512m -Xmx512m"
 
-CMD ["/bin/bash", "-c", "java -server $SOLR_JAVA_MEM -XX:NewRatio=3 -XX:SurvivorRatio=4 -XX:TargetSurvivorRatio=90 -XX:MaxTenuringThreshold=8 -XX:+UseG1GC -XX:ConcGCThreads=4 -XX:ParallelGCThreads=4 -XX:+CMSScavengeBeforeRemark -XX:PretenureSizeThreshold=64m -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=50 -XX:CMSMaxAbortablePrecleanTime=6000 -XX:+CMSParallelRemarkEnabled -XX:+ParallelRefProcEnabled -XX:-OmitStackTraceInFastThrow -Djetty.port=8983 -Duser.timezone=$SOLR_TIMEZONE -Dlog4j2.formatMsgNoLookups=true -Djetty.home=/opt/solr/server -Dsolr.data.dir=/var/lib/solr/data -Dsolr.install.dir=/opt/solr -Xss256k -jar start.jar --module=http"]
+CMD ["/bin/bash", "-c", "java -server $SOLR_JAVA_MEM -XX:NewRatio=3 -XX:SurvivorRatio=4 -XX:TargetSurvivorRatio=90 -XX:MaxTenuringThreshold=8 -XX:+UseG1GC -XX:ConcGCThreads=4 -XX:ParallelGCThreads=4 -XX:+CMSScavengeBeforeRemark -XX:PretenureSizeThreshold=64m -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=50 -XX:CMSMaxAbortablePrecleanTime=6000 -XX:+CMSParallelRemarkEnabled -XX:+ParallelRefProcEnabled -XX:-OmitStackTraceInFastThrow -Djetty.port=8983 -Duser.timezone=$SOLR_TIMEZONE -Dlog4j2.formatMsgNoLookups=true -Djetty.home=/opt/solr/server -Xlog:gc*:file=stderr:time,uptime:filecount=0,filesize=0 -Dsolr.log.dir=/dev/null -Dsolr.solr.home=/etc/solr -Dsolr.data.dir=/var/lib/solr/data -Dsolr.install.dir=/opt/solr -Xss256k -jar start.jar --module=http"]
 
 # generated labels
 

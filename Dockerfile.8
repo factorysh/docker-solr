@@ -35,7 +35,7 @@ WORKDIR /opt/solr/server
 ENV SOLR_TIMEZONE="Europe/Paris"
 ENV SOLR_JAVA_MEM="-Xms512m -Xmx512m"
 
-CMD ["/bin/bash", "-c", "java -server $SOLR_JAVA_MEM -XX:+UseG1GC -XX:+PerfDisableSharedMem -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=250 -XX:+AlwaysPreTouch -XX:+ExplicitGCInvokesConcurrent -Djetty.port=8983 -Duser.timezone=$SOLR_TIMEZONE -XX:-OmitStackTraceInFastThrow -Djetty.home=/opt/solr/server -Dsolr.data.dir=/var/lib/solr/data -Dsolr.install.dir=/opt/solr -Dlog4j2.formatMsgNoLookups=true -Xss256k -jar start.jar --module=http --module=gzip"]
+CMD ["/bin/bash", "-c", "java -server $SOLR_JAVA_MEM -XX:+UseG1GC -XX:+PerfDisableSharedMem -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=250 -XX:+AlwaysPreTouch -XX:+ExplicitGCInvokesConcurrent -Djetty.port=8983 -Duser.timezone=$SOLR_TIMEZONE -XX:-OmitStackTraceInFastThrow -Djetty.home=/opt/solr/server -Xlog:gc*:file=stderr:time,uptime:filecount=0,filesize=0 -Dsolr.log.dir=/dev/null -Dsolr.solr.home=/etc/solr -Dsolr.data.dir=/var/lib/solr/data -Dsolr.install.dir=/opt/solr -Dlog4j2.formatMsgNoLookups=true -Xss256k -jar start.jar --module=http --module=gzip"]
 
 # generated labels
 
