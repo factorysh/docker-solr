@@ -40,11 +40,10 @@
       <MarkerFilter marker="org.apache.solr.handler.admin.MetricsHandler" onMatch="DENY" onMismatch="ACCEPT"/>
     </AsyncLogger>
     <AsyncLogger name="org.apache.solr.core.SolrCore.SlowRequest" level="info" additivity="false">
-      <AppenderRef ref="SlowLogFile"/>
+      <AppenderRef ref="STDOUT"/>
     </AsyncLogger>
 
     <AsyncRoot level="info">
-      <AppenderRef ref="MainLogFile"/>
       <AppenderRef ref="STDOUT"/>
     </AsyncRoot>
   </Loggers>
