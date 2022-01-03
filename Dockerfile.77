@@ -18,12 +18,12 @@ RUN set -eux \
 
 # install to /opt/solr
 COPY $BUILD_DIR /opt/solr/
-RUN mkdir /opt/solr/server/solr/core1
-RUN chmod 0777 /opt/solr/server/solr/core1
-RUN cp -r /opt/solr/server/solr/configsets/_default/conf/* /etc/solr/conf
-RUN  echo "name=core1" > /opt/solr/server/solr/core1/core.properties
-RUN ln -s /etc/solr/conf /opt/solr/server/solr/core1/conf
-RUN rm -rf /opt/solr/server/solr/configsets
+RUN mkdir /opt/solr/server/solr/core1 \
+    && chmod 0777 /opt/solr/server/solr/core1 \
+    && cp -r /opt/solr/server/solr/configsets/_default/conf/* /etc/solr/conf \
+    && echo "name=core1" > /opt/solr/server/solr/core1/core.properties \
+    && ln -s /etc/solr/conf /opt/solr/server/solr/core1/conf \
+    && rm -rf /opt/solr/server/solr/configsets
 
 # configure log4j to log only on console
 COPY log4j.properties.solr /opt/solr/server/resources/log4j.properties

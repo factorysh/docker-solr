@@ -14,8 +14,8 @@ RUN useradd solr -d /opt/solr --uid ${uid} --shell /bin/bash
 # COPY /conf/solr /etc/solr/conf
 
 # Adjust owner
-RUN chown ${uid}.${uid} /opt/solr -R
-RUN chown ${uid}.${uid} /var/lib/solr -R
-RUN chown ${uid}.${uid} /etc/solr -R
+RUN chown ${uid}.${uid} /opt/solr -R \
+    && chown ${uid}.${uid} /var/lib/solr -R \
+    && chown ${uid}.${uid} /etc/solr -R
 
 USER solr
