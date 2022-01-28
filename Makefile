@@ -52,6 +52,8 @@ build/$(SOLR49_VERSION)/solr: build/$(SOLR49_VERSION)/solr.tgz
 	# extract contrib + dist (contains additionals solr libs)
 	tar --strip-components=1 -C build/$(SOLR49_VERSION)/solr \
     -xzf build/$(SOLR49_VERSION)/solr.tgz solr-$(SOLR49_VERSION)/contrib solr-$(SOLR49_VERSION)/dist
+	# remove ChainSaw from log4j-1.2.x
+	zip -q -d build/$(SOLR49_VERSION)/solr/lib/ext/log4j-*.jar org/apache/log4j/chainsaw/*
 	#change rights
 	find build/$(SOLR49_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
 	find build/$(SOLR49_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
@@ -70,6 +72,8 @@ build/$(SOLR55_VERSION)/solr: build/$(SOLR55_VERSION)/solr.tgz
       -xzf build/$(SOLR55_VERSION)/solr.tgz solr-$(SOLR55_VERSION)/server
 	# remove old logs
 	rm -rf build/$(SOLR55_VERSION)/solr/server/logs
+	# remove ChainSaw from log4j-1.2.x
+	zip -q -d build/$(SOLR55_VERSION)/solr/server/lib/ext/log4j-*.jar org/apache/log4j/chainsaw/*
 	#change rights
 	find build/$(SOLR55_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
 	find build/$(SOLR55_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
@@ -88,6 +92,8 @@ build/$(SOLR64_VERSION)/solr: build/$(SOLR64_VERSION)/solr.tgz
       -xzf build/$(SOLR64_VERSION)/solr.tgz solr-$(SOLR64_VERSION)/server
 	# remove old logs
 	rm -rf build/$(SOLR64_VERSION)/solr/server/logs
+	# remove ChainSaw from log4j-1.2.x
+	zip -q -d build/$(SOLR64_VERSION)/solr/server/lib/ext/log4j-*.jar org/apache/log4j/chainsaw/*
 	#change rights
 	find build/$(SOLR64_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
 	find build/$(SOLR64_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
@@ -106,6 +112,8 @@ build/$(SOLR66_VERSION)/solr: build/$(SOLR66_VERSION)/solr.tgz
       -xzf build/$(SOLR66_VERSION)/solr.tgz solr-$(SOLR66_VERSION)/server
 	# remove old logs
 	rm -rf build/$(SOLR66_VERSION)/solr/server/logs
+	# remove ChainSaw from log4j-1.2.x
+	zip -q -d build/$(SOLR66_VERSION)/solr/server/lib/ext/log4j-*.jar org/apache/log4j/chainsaw/*
 	#change rights
 	find build/$(SOLR66_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
 	find build/$(SOLR66_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
