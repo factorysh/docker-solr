@@ -71,7 +71,7 @@ docker-compose.yml sample for "factory":
     solr:
         image: $CI_REGISTRY_IMAGE/solr:8
         volumes:
-            - ./data/scraping_solr_data:/var/lib/solr/data
+            - ./data/solr8:/var/lib/solr/data
         expose:
             - 8983
 
