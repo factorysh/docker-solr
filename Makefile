@@ -303,4 +303,5 @@ down:
 tests: | test3.6 test4.9 test5.5 test6.4 test6.6 test7.7 test8
 
 clean:
+	mkdir -p build/
 	find build/ -maxdepth 2 -type d -name solr -exec rm -rf {} \;
