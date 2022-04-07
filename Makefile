@@ -21,8 +21,8 @@ JETTY8_VERSION=8.1.10
 
 all: pull build
 
-build: clean solr3 solr4 solr5 solr6 solr7 solr8
- 
+build: clean solr-3 solr-4 solr-5 solr-6 solr-7 solr-8
+
 build/$(SOLR36_VERSION)/solr.tgz:
 	# fetch archive
 	mkdir -p build/$(SOLR36_VERSION)
@@ -190,7 +190,7 @@ build/$(SOLR8_VERSION)/solr: build/$(SOLR8_VERSION)/solr.tgz
 	find build/$(SOLR8_VERSION)/solr -type d -print0 | xargs -0 chmod 0777
 	find build/$(SOLR8_VERSION)/solr -type f -print0 | xargs -0 chmod 0666
 
-solr3: build/$(SOLR36_VERSION)/solr
+solr-3: build/$(SOLR36_VERSION)/solr
 	 docker build \
 		$(DOCKER_BUILD_ARGS) \
 		-t bearstech/solr:3 \
@@ -198,7 +198,7 @@ solr3: build/$(SOLR36_VERSION)/solr
 		.
 	docker tag bearstech/solr:3 bearstech/solr:3.6
 
-solr4: build/$(SOLR49_VERSION)/solr
+solr-4: build/$(SOLR49_VERSION)/solr
 	 docker build \
 		$(DOCKER_BUILD_ARGS) \
 		-t bearstech/solr:4 \
@@ -206,7 +206,7 @@ solr4: build/$(SOLR49_VERSION)/solr
 		.
 	docker tag bearstech/solr:4 bearstech/solr:4.9
 
-solr5: build/$(SOLR55_VERSION)/solr
+solr-5: build/$(SOLR55_VERSION)/solr
 	 docker build \
 		$(DOCKER_BUILD_ARGS) \
 		-t bearstech/solr:5 \
@@ -214,7 +214,7 @@ solr5: build/$(SOLR55_VERSION)/solr
 		.
 	docker tag bearstech/solr:5 bearstech/solr:5.5
 
-solr6: build/$(SOLR64_VERSION)/solr build/$(SOLR66_VERSION)/solr
+solr-6: build/$(SOLR64_VERSION)/solr build/$(SOLR66_VERSION)/solr
 	docker build \
     $(DOCKER_BUILD_ARGS) \
     -t bearstech/solr:6.4\
@@ -227,7 +227,7 @@ solr6: build/$(SOLR64_VERSION)/solr build/$(SOLR66_VERSION)/solr
 		.
 	docker tag bearstech/solr:6 bearstech/solr:6.6
 
-solr7: build/$(SOLR77_VERSION)/solr
+solr-7: build/$(SOLR77_VERSION)/solr
 	 docker build \
 		$(DOCKER_BUILD_ARGS) \
 		-t bearstech/solr:7 \
@@ -235,7 +235,7 @@ solr7: build/$(SOLR77_VERSION)/solr
 		.
 	docker tag bearstech/solr:7 bearstech/solr:7.7
 
-solr8: build/$(SOLR8_VERSION)/solr
+solr-8: build/$(SOLR8_VERSION)/solr
 	 docker build \
 		$(DOCKER_BUILD_ARGS) \
 		-t bearstech/solr:8 \
@@ -247,60 +247,46 @@ solr8: build/$(SOLR8_VERSION)/solr
 pull:
 	docker pull bearstech/java:11
 
-push:
-	docker push bearstech/solr:3
-	docker push bearstech/solr:3.6
-	docker push bearstech/solr:4
-	docker push bearstech/solr:4.9
-	docker push bearstech/solr:6
-	docker push bearstech/solr:6.4
-	docker push bearstech/solr:6.6
-	docker push bearstech/solr:7
-	docker push bearstech/solr:7.7
-	docker push bearstech/solr:8
+push-%:
+	$(eval version=$(shell echo $@ | cut -d- -f2))
+	docker push bearstech/solr:$(version)
+
+push: push-8
 
 remove_image:
-	docker rmi bearstech/solr:3
-	docker rmi bearstech/solr:3.6
-	docker rmi bearstech/solr:4
-	docker rmi bearstech/solr:4.9
-	docker rmi bearstech/solr:6
-	docker rmi bearstech/solr:6.4
-	docker rmi bearstech/solr:6.6
-	docker rmi bearstech/solr:7
-	docker rmi bearstech/solr:7.7
-	docker rmi bearstech/solr:8
+	docker rmi -f $(shell docker images -q --filter="reference=bearstech/solr") || true
 
 bin/goss:
 	mkdir -p bin
 	curl -o bin/goss -L https://github.com/aelsabbahy/goss/releases/download/v${GOSS_VERSION}/goss-linux-amd64
 	chmod +x bin/goss
 
-test3.6: bin/goss
+test-3.6: bin/goss
 	make -C tests_solr tests SOLR_VERSION=3.6 SOLR_FULL_VERSION=${SOLR36_VERSION} BASE_URL=/solr/
 
-test4.9: bin/goss
+test-4.9: bin/goss
 	make -C tests_solr tests SOLR_VERSION=4.9 SOLR_FULL_VERSION=${SOLR49_VERSION} BASE_URL=/solr/
 
-test5.5: bin/goss
+test-5.5: bin/goss
 	make -C tests_solr tests SOLR_VERSION=5.5 SOLR_FULL_VERSION=${SOLR55_VERSION} BASE_URL=/solr/core1/
 
-test6.4: bin/goss
+test-6.4: bin/goss
 	make -C tests_solr tests SOLR_VERSION=6.4 SOLR_FULL_VERSION=${SOLR64_VERSION} BASE_URL=/solr/core1/
 
-test6.6: bin/goss
+test-6.6: bin/goss
 	make -C tests_solr tests SOLR_VERSION=6.6 SOLR_FULL_VERSION=${SOLR66_VERSION} BASE_URL=/solr/core1/
 
-test7.7: bin/goss
+test-7.7: bin/goss
 	make -C tests_solr tests SOLR_VERSION=7.7 SOLR_FULL_VERSION=${SOLR77_VERSION} BASE_URL=/solr/core1/
 
-test8: bin/goss
+test-8: bin/goss
 	make -C tests_solr tests SOLR_VERSION=8 SOLR_FULL_VERSION=${SOLR8_VERSION} BASE_URL=/solr/core1/
 
 down:
 	make -C tests_solr down
 
-tests: | test3.6 test4.9 test5.5 test6.4 test6.6 test7.7 test8
+tests: | test-3.6 test-4.9 test-5.5 test-6.4 test-6.6 test-7.7 test-8
+
 
 clean:
 	mkdir -p build/
