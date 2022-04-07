@@ -21,7 +21,13 @@ JETTY8_VERSION=8.1.10
 
 all: pull build
 
-build: clean solr-3 solr-4 solr-5 solr-6 solr-7 solr-8
+push-%:
+	$(eval version=$(shell echo $@ | cut -d- -f2))
+	docker push bearstech/solr:$(version)
+
+push: push-8
+
+build: clean solr-8
 
 build/$(SOLR36_VERSION)/solr.tgz:
 	# fetch archive
@@ -247,12 +253,6 @@ solr-8: build/$(SOLR8_VERSION)/solr
 pull:
 	docker pull bearstech/java:11
 
-push-%:
-	$(eval version=$(shell echo $@ | cut -d- -f2))
-	docker push bearstech/solr:$(version)
-
-push: push-8
-
 remove_image:
 	docker rmi -f $(shell docker images -q --filter="reference=bearstech/solr") || true
 
@@ -285,8 +285,7 @@ test-8: bin/goss
 down:
 	make -C tests_solr down
 
-tests: | test-3.6 test-4.9 test-5.5 test-6.4 test-6.6 test-7.7 test-8
-
+tests: | test-8
 
 clean:
 	mkdir -p build/
